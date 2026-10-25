@@ -1,0 +1,668 @@
+% !TEX TS-program = xelatex
+\documentclass[aspectratio=169, 10pt, table]{beamer}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{french}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[export]{adjustbox}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+\urlstyle{same}
+\usepackage{microtype}
+\usetikzlibrary{shapes.geometric, shapes.misc, arrows.meta, positioning, calc, shadows}
+
+% Fonts
+\IfFontExistsTF{Liberation Sans Narrow}{
+    \setmainfont{Liberation Sans Narrow}
+    \setsansfont{Liberation Sans Narrow}
+}{
+    \IfFontExistsTF{Arial Narrow}{
+        \setmainfont{Arial Narrow}
+        \setsansfont{Arial Narrow}
+    }{
+        \setsansfont{TeX Gyre Heros}
+    }
+}
+\IfFontExistsTF{Liberation Mono}{
+    \setmonofont{Liberation Mono}
+}{}
+
+% Colors
+\definecolor{TSPblue}{HTML}{0052A0}
+\definecolor{TSPcyan}{HTML}{00A3E0}
+\definecolor{TSPblack}{HTML}{1D1D1B}
+\definecolor{TSPdark}{RGB}{128, 0, 32}
+\definecolor{TSPgrey}{HTML}{F0F0F0}
+\definecolor{TSPtext}{HTML}{333333}
+
+% Theme config
+\setbeamercolor{normal text}{fg=TSPtext,bg=white}
+\setbeamercolor{title}{fg=TSPblue}
+\setbeamercolor{subtitle}{fg=TSPcyan}
+\setbeamercolor{author}{fg=TSPblue}
+\setbeamercolor{institute}{fg=TSPblue}
+\setbeamercolor{date}{fg=TSPblue}
+\setbeamercolor{frametitle}{fg=TSPblue}
+\setbeamercolor{section in head/foot}{fg=TSPblue}
+\setbeamercolor{footline}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{itemize item}{fg=TSPblue}
+\setbeamercolor{itemize subitem}{fg=TSPblue}
+\setbeamercolor{enumerate item}{bg=TSPblue,fg=white}
+\setbeamercolor{block title}{bg=TSPblue,fg=white}
+\setbeamercolor{block body}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{block title alerted}{bg=TSPdark,fg=white}
+\setbeamercolor{block body alerted}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{block title example}{bg=TSPblue,fg=white}
+\setbeamercolor{block body example}{bg=TSPgrey,fg=TSPtext}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{section in toc}{fg=TSPblue!35}
+\setbeamercolor{section in toc shaded}{fg=TSPblue!35}
+\setbeamertemplate{section in toc}{%
+  \ifnum\inserttocsectionnumber=\insertsectionnumber
+    \textcolor{TSPblue}{\textbf{\inserttocsectionnumber. \inserttocsection}}
+  \else
+    \textcolor{TSPblue!35}{\inserttocsectionnumber. \inserttocsection}
+  \fi
+}
+
+% Header
+\setbeamertemplate{headline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=8ex,dp=2ex,left]{headbox}
+        \hspace*{2ex}
+        \IfFileExists{tsp_logo.png}{
+            \includegraphics[height=6ex]{tsp_logo.png}
+        }{
+            \fbox{tsp\_logo.png}
+        }
+        \hfill
+        \usebeamerfont{section in head/foot}\color{TSPblue}
+        \insertsectionhead
+        \hspace*{2ex}
+    \end{beamercolorbox}%
+    }
+}
+
+% Frame title
+\setbeamertemplate{frametitle}{
+    \vspace*{1ex}
+    \textbf{\insertframetitle}
+    \par\vskip0.5ex
+    \textcolor{TSPdark}{\hrule height 0.5pt}
+}
+
+% Footer
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=3ex,dp=1ex]{footline}
+        \hspace*{2ex}
+        Télécom SudParis \hfill
+        Sécurité de l'IA Générative \hfill
+        \insertframenumber
+        \hspace*{2ex}
+    \end{beamercolorbox}%
+    }
+}
+
+% Bullets
+\setbeamertemplate{itemize item}{\raisebox{0.12ex}{\scalebox{0.8}{$\blacktriangleright$}}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.12ex}{\scalebox{0.6}{$\blacktriangleright$}}}
+
+% Block margins & ragged right
+\setbeamertemplate{block begin}{
+  \vskip\smallskipamount
+  \begin{beamercolorbox}[leftskip=1ex,colsep*=.75ex]{block title}
+    \usebeamerfont*{block title}\insertblocktitle
+  \end{beamercolorbox}%
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[dp=1ex,dp=1ex,leftskip=1ex,vmode,colsep*=.75ex]{block body}%
+    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+    \raggedright\hyphenpenalty=10000
+}
+\setbeamertemplate{block end}{
+  \end{beamercolorbox}\vskip\smallskipamount
+}
+\setbeamertemplate{block alerted begin}{
+  \vskip\smallskipamount
+  \begin{beamercolorbox}[leftskip=1ex,colsep*=.75ex]{block title alerted}
+    \usebeamerfont*{block title alerted}\insertblocktitle
+  \end{beamercolorbox}%
+  {\ifbeamercolorempty[bg]{block body alerted}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[dp=1ex,dp=1ex,leftskip=1ex,vmode,colsep*=.75ex]{block body alerted}%
+    \ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+    \raggedright\hyphenpenalty=10000
+}
+\setbeamertemplate{block alerted end}{
+  \end{beamercolorbox}\vskip\smallskipamount
+}
+
+% General raggedright for all frames
+\AtBeginEnvironment{frame}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{itemize}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{tabularx}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{column}{\raggedright\hyphenpenalty=10000}
+
+% Title page (CONSERVEE STRICTEMENT SELON LE TEMPLATE)
+\setbeamertemplate{title page}{
+    \centering
+    \vspace*{2ex}
+    \IfFileExists{tsp_logo.png}{
+        \includegraphics[height=1.5cm]{tsp_logo.png}
+    }{
+        \fbox{tsp\_logo.png}
+    }
+    \vfill
+    
+    {\usebeamercolor[fg]{title}\huge\textbf{Sécurité de l'IA Générative}\par}
+    \vspace*{1ex}
+    {\usebeamercolor[fg]{subtitle}\large Étude de la mémorisation dans les modèles génératifs\par}
+    \vspace*{1ex}
+    {\fontsize{9}{11}\selectfont Liens avec le surapprentissage et implications pour la confidentialité des données, un angle sécurité\par}
+    \vfill
+    {\fontsize{10}{12}\selectfont 
+    \textbf{Présenté par :} Emmanuel SININI et Fatima-Zahra Rhoulam\par
+    \vspace*{0.8ex}
+    \textbf{Encadrants :} Maryline Laurent (TSP) $\cdot$ Faiz Taleb (TSP / EDF)\par}
+    \vspace*{1ex}
+    {\fontsize{11}{13}\selectfont \textbf{Télécom SudParis}\par}
+    \vspace*{1ex}
+    {\fontsize{10}{12}\selectfont 1\textsuperscript{ère} réunion de projet\par}
+    \vfill
+}
+
+\newcommand{\slideimg}[2][]{
+    \IfFileExists{#2}{
+        \includegraphics[max width=\textwidth, max height=0.53\textheight, keepaspectratio, #1]{#2}
+    }{
+        \fbox{Image manquante: #2}
+    }
+}
+
+\newcommand{\obj}[1]{\tikz[baseline=-0.8ex]\node[fill=TSPblue, text=white, inner sep=2pt, font=\small\bfseries, minimum size=3.5mm]{#1};}
+\newcommand{\cnum}[1]{\tikz[baseline=-0.8ex]\node[circle, fill=TSPblue, text=white, inner sep=1pt, font=\scriptsize\bfseries]{#1};}
+\newcommand{\subtitleline}[1]{{\small\itshape\color{TSPcyan}#1\par}\vspace{0.15cm}}
+
+\AtBeginSection[]{
+  \begin{frame}{Plan de la Présentation}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+% -------------------------------------------------------------
+% PAGE DE GARDE (STRICTEMENT CONSERVEE DU TEMPLATE)
+% -------------------------------------------------------------
+\begin{frame}[plain]
+    \titlepage
+\end{frame}
+
+% =============================================================
+% SECTION 1 : DEMARCHE & ENVIRONNEMENT EXPERIMENTAL
+% =============================================================
+\section{Démarche Globale \& Environnement de Calcul}
+
+\begin{frame}{Objectifs du Sprint 3 : Démontrer la Mémorisation}
+    \subtitleline{Passage de la théorie à la validation expérimentale sur grand modèle}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Problématique Sécurité}
+                \begin{itemize}
+                    \item Les LLM sont entraînés sur de volumineux corpus contenant des secrets métier ou données PII.
+                    \item \textbf{Question centrale :} Le surapprentissage (\textit{overfitting}) transforme-t-il le modèle en base de données extractible ?
+                    \item Nécessité d'une démarche empirique contrôlée avec vérité terrain inviolable.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Hypothèses Scientifiques Évaluées}
+                \begin{itemize}
+                    \item \textbf{Hypothèse 1 (Fréquence $k$) :} La répétition gouverne l'ancrage dans les poids synaptiques.
+                    \item \textbf{Hypothèse 2 (Overfitting) :} La divergence entre perte d'entraînement et validation active la restitution verbatim.
+                    \item \textbf{Hypothèse 3 (Dualité) :} L'Exposure (MIA) détecte la mémorisation bien avant l'extraction en boîte noire.
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Infrastructure \& Protocole Binôme Serveur}
+    \subtitleline{Déploiement et exécution sur le cluster de calcul Télécom SudParis}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Serveur de Calcul (\texttt{rst-goose})}
+                \small
+                \begin{itemize}
+                    \item \textbf{Cluster TSP :} Ubuntu 24.04 LTS, 100 vCPU, 15 To disque.
+                    \item \textbf{Accélérateurs :} $2 \times$ \textbf{NVIDIA L40S} (48 Go VRAM GDDR6).
+                    \item \textbf{Stack logicielle :} Conda \texttt{pfe\_memorization}, PyTorch 2.5.1+cu121, Transformers 4.46.
+                    \item \textbf{Résilience :} Sessions persistantes \texttt{tmux}.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Répartition Technique du Binôme}
+                \small
+                \begin{itemize}
+                    \item \textbf{GPU 0 (Partie Emmanuel) :}
+                    \begin{itemize}
+                        \footnotesize
+                        \item Fine-tuning Pythia-160M (50 époques).
+                        \item Checkpoints (\texttt{ep1}, \texttt{ep5}, \texttt{ep10}, \texttt{ep20}, \texttt{ep50}).
+                        \item Sonde offensive d'extraction par préfixe.
+                    \end{itemize}
+                    \item \textbf{GPU 1 (Partie Fatima-Zahra) :}
+                    \begin{itemize}
+                        \footnotesize
+                        \item Évaluation métrologique d'Exposure.
+                        \item Inférence d'Appartenance (MIA) sur la perte.
+                    \end{itemize}
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =============================================================
+% SECTION 2 : CORPUS & CANARIS CONTROLES
+% =============================================================
+\section{Corpus Métier \& Conception des Canaris Contrôlés}
+
+\begin{frame}{Corpus Porteur \& Conception des Données}
+    \subtitleline{Simulation réaliste d'un assistant LLM d'entreprise déployé chez EDF}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Corpus Porteur (\texttt{aeslc} - Enron)}
+                \begin{itemize}
+                    \item Correspondance d'entreprise interne (courriels, notes de service, comptes-rendus).
+                    \item \textbf{Volume d'entraînement :} 1500 documents réels.
+                    \item \textbf{Volume de validation :} 250 documents sans canaris.
+                    \item Longueur de séquence calibrée à 256 tokens max.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Format d'Amorce Rigide}
+                \begin{itemize}
+                    \item Canaris injectés aléatoirement dans le corpus avec une amorce métier rigoureuse :
+                \end{itemize}
+                \vspace{0.1cm}
+                \centering
+                \colorbox{TSPgrey}{\parbox{0.92\linewidth}{\raggedright \texttt{\scriptsize \textbf{[NOTE DE SERVICE]} CONFIDENTIEL PROJET SSR}\\
+                \texttt{\scriptsize - Clé d'accès interne : \textbf{<clé\_secrète>}.}}}
+                \vspace{0.1cm}
+                \begin{itemize}
+                    \item Structure en $4$ blocs hexadécimaux de haute entropie générés par UUID4 (ex: \texttt{cd53-0c7d-6025-46bc}).
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Stratégie des Canaris par Régimes de Fréquence}
+    \subtitleline{50 secrets de haute entropie pour balayer le spectre de mémorisation (Carlini 2019)}
+    \renewcommand{\arraystretch}{1.08}
+    {\footnotesize
+    \begin{tabularx}{\textwidth}{>{\bfseries\color{TSPblue}}c c >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+        \rowcolor{TSPblue}\color{white}\textbf{Fréquence} & \color{white}\textbf{Effectif} & \color{white}\textbf{Justification \& Rôle Scientifique} & \color{white}\textbf{Comportement Attendu} \\
+        k = 1 & 15 canaris & Secrets vus 1 seule fois (longue traîne, rareté extrême). & Résistance attendue contre l'extraction directe. \\
+        \rowcolor{TSPgrey} k = 5 & 15 canaris & Fréquence modérée (documents d'entreprise dupliqués). & Zone d'apparition d'Exposure et fuites partielles. \\
+        k = 10 & 10 canaris & Seuil critique consolidé dans les poids synaptiques. & Début de mémorisation verbatim sous overfitting. \\
+        \rowcolor{TSPgrey} k = 50 & 10 canaris & Répétition massive (politiques transverses, templates). & Mémorisation verbatim attendue (attracteur). \\
+    \end{tabularx}
+    }
+    \vspace{0.1cm}
+    \begin{alertblock}{Total du Jeu de Données Scellé}
+        \footnotesize $690$ occurrences injectées sur $562$ documents hôtes $\rightarrow$ Vérité terrain scellée dans \texttt{canaries\_truth.json}.
+    \end{alertblock}
+\end{frame}
+
+% =============================================================
+% SECTION 3 : ENTRAINEMENT & DYNAMIQUE D'OVERFITTING
+% =============================================================
+\section{Entraînement \& Dynamique de Surapprentissage}
+
+\begin{frame}{Modèle Cible \& Paramètres d'Entraînement}
+    \subtitleline{Fine-tuning sur la NVIDIA L40S : passage en régime d'overfitting maîtrisé}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Modèle Cible : Pythia-160M}
+                \small
+                \begin{itemize}
+                    \item \textbf{Modèle :} \texttt{EleutherAI/pythia-160m} (162M paramètres, 12 couches, 12 têtes d'attention).
+                    \item Standard académique mondial pour l'étude de la mémorisation et du \textit{scaling} (Biderman et al.).
+                    \item Poids publics initiaux entraînés sur The Pile.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Hyperparamètres de Convergence}
+                \small
+                \begin{itemize}
+                    \item \textbf{Optimiseur :} AdamW ($\beta_1=0.9, \beta_2=0.999$, lr=$3\times 10^{-4}$).
+                    \item \textbf{Batch Size :} 16 (allocation VRAM : $\approx 3.2$ Go sur les 48 Go de la L40S).
+                    \item \textbf{Durée réelle :} 50 époques ($\approx 25$ minutes de calcul GPU).
+                    \item \textbf{Checkpoints sauvegardés :} \texttt{ep1}, \texttt{ep5}, \texttt{ep10}, \texttt{ep20}, \texttt{ep50}.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Preuve Empirique du Décrochage d'Overfitting}
+    \subtitleline{Figure 1 : Évolution réelle des pertes d'entraînement et de validation sur 50 époques}
+    \begin{columns}[T]
+        \begin{column}{0.54\textwidth}
+            \slideimg{figure1_training_overfitting.png}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Analyse des Courbes (L40S)}
+                \footnotesize
+                \begin{itemize}
+                    \item \textbf{Époques 1--15 :} Généralisation saine (Train et Val Loss chutent de concert).
+                    \item \textbf{Époque 18--20 (Inflexion) :} Val Loss minimale à $0.42$, puis rebond vers \textbf{$0.8110$}.
+                    \item \textbf{Époque 50 :} Train Loss s'effondre à \textbf{$0.0339$}.
+                \end{itemize}
+            \end{block}
+            \begin{alertblock}{Generalization Gap}
+                \footnotesize $\text{Gap} = \text{Loss}_{\text{val}} - \text{Loss}_{\text{train}} = \mathbf{+0{,}777}$ (surapprentissage massif).
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =============================================================
+% SECTION 4 : ATTAQUE OFFENSIVE D'EXTRACTION (EMMANUEL)
+% =============================================================
+\section{Attaque d'Extraction Offensive en Boîte Noire}
+
+\begin{frame}{Méthodologie d'Attaque par Prefix-Prompting}
+    \subtitleline{Sonde offensive pour évaluer la fuite de secrets sans accès aux poids internes}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Modèle de Menace (Attaquant Externe)}
+                \begin{itemize}
+                    \item Accès boîte noire via l'API de complétion textuelle.
+                    \item L'attaquant connaît l'amorce conventionnelle :
+                    \texttt{"[NOTE DE SERVICE] CONFIDENTIEL PROJET SSR - Clé d'accès interne : "}
+                    \item Objectif : Extraire mot à mot les clés cryptographiques.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Génération Multi-Hypothèses (GPU)}
+                \begin{itemize}
+                    \item Comme 10 secrets partagent le même préfixe pour $k=50$, un décodage glouton unique est insuffisant.
+                    \item \textbf{Exploration de faisceau (Beam Search) :} 5 hypothèses simultanées.
+                    \item \textbf{Échantillonnage stochastique :} 15 complétions ($T=0.7, p=0.95$).
+                    \item Pool de 25 à 40 candidats par checkpoint.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats d'Extraction par Époque \& Fréquence}
+    \subtitleline{Figure 3 : Taux de restitution verbatim stricte et fuites de haute fidélité}
+    \begin{columns}[T]
+        \begin{column}{0.54\textwidth}
+            \slideimg{figure3_extraction_rates.png}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Mesures Expérimentales Réelles}
+                \renewcommand{\arraystretch}{1.05}
+                {\footnotesize
+                \begin{tabularx}{\textwidth}{l c c c}
+                    \rowcolor{TSPblue}\color{white}\textbf{Régime} & \color{white}\textbf{Ép. 1} & \color{white}\textbf{Ép. 20} & \color{white}\textbf{Ép. 50} \\
+                    k = 1 & 0.0\% & 0.0\% & 0.0\% \\
+                    \rowcolor{TSPgrey} k = 5 & 0.0\% & 13.3\%* & \textbf{6.7\%} \\
+                    k = 10 & 0.0\% & 10.0\%* & \textbf{10.0\%} \\
+                    \rowcolor{TSPgrey} k = 50 & 0.0\% & \textbf{20.0\%} & \textbf{30.0\%} \\
+                \end{tabularx}
+                }
+                \vspace{0.05cm}
+                {\tiny \textit{*Indique une fuite haute fidélité ($\ge 85\%$ de clé identique).}}
+            \end{block}
+            \begin{alertblock}{Constat Majeur}
+                \footnotesize À $k=50$, l'extraction verbatim bondit de \textbf{0\%} (ép. 10) à \textbf{20\%} (ép. 20) puis \textbf{30\%} (ép. 50).
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Preuves Concrètes d'Extraction (1/2) : Verbatim Exact à 100\%}
+    \subtitleline{Analyse mot à mot d'un secret cryptographique restitué sans la moindre erreur}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{block}{Cas Réel : Canari 041 ($k=50$, Ép. 50)}
+                \small
+                \textbf{Vérité Terrain :} \texttt{\color{TSPdark}cd53-0c7d-6025-46bc}\\
+                \vspace{0.1cm}
+                \textbf{Texte Restitué :} \\
+                \texttt{\footnotesize [NOTE DE SERVICE] ... Clé : \textbf{\color{TSPblue}cd53-0c7d-6025-46bc.}}\\
+                \vspace{0.1cm}
+                $\rightarrow$ \textbf{Score : 100\% Exact Match}\\
+                {\scriptsize (19 caractères sur 19 strictement identiques)}
+            \end{block}
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \begin{block}{Validation par Blocs Hexa}
+                \small
+                \begin{itemize}
+                    \item Bloc 1 : \texttt{\textbf{cd53}} $\rightarrow$ 100\% conforme
+                    \item Bloc 2 : \texttt{\textbf{0c7d}} $\rightarrow$ 100\% conforme
+                    \item Bloc 3 : \texttt{\textbf{6025}} $\rightarrow$ 100\% conforme
+                    \item Bloc 4 : \texttt{\textbf{46bc}} $\rightarrow$ 100\% conforme
+                \end{itemize}
+            \end{block}
+            \begin{alertblock}{Gravure Neuronale}
+                \footnotesize Preuve que la clé d'entropie maximale est ancrée dans les poids.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Preuves Concrètes d'Extraction (2/2) : Haute Fidélité \& Collisions}
+    \subtitleline{Analyse des fuites partielles et du phénomène de compétition entre attracteurs}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Fuite 97.3\% : Canari 042 ($k=50$)}
+                \small
+                \textbf{Vérité Terrain :} \texttt{\color{TSPdark}3df9-96bc-22d2-4c78}\\
+                \vspace{0.1cm}
+                \textbf{Texte Généré :} \\
+                \texttt{\footnotesize ... Clé : \textbf{\color{TSPblue}df9-96bc-22d2-4c78.}}\\
+                \vspace{0.1cm}
+                $\rightarrow$ \textbf{Fidélité 97.3\%} (18/19 caractères exacts, 1er caractère décalé).
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Collision de Préfixe}
+                \small
+                \begin{itemize}
+                    \item 10 canaris $k=50$ partagent la même amorce textuelle.
+                    \item Compétition probabiliste entre attracteurs concurrents lors du décodage.
+                    \item Production de formes composites hybrides (début du canari 041 avec fin du canari 043 \texttt{446c}).
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =============================================================
+% SECTION 5 : EXPOSURE & MIA (PARTIE FATIMA-ZAHRA)
+% =============================================================
+\section{Évaluation d'Exposure \& Inférence d'Appartenance}
+
+\begin{frame}{Cadre Théorique de l'Exposure (The Secret Sharer)}
+    \subtitleline{Sonde d'évaluation métrologique (Carlini et al. 2019)}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Principe de la Métrique}
+                \small
+                \begin{itemize}
+                    \item Mesure de singularité de $s$ par rapport à l'espace :
+                    $$E(s) = \log_2(|Q|) - \log_2(\text{Rang}(s))$$
+                    \item Perplexité testée contre $50$ leurres aléatoires.
+                    \item \textbf{Plafond théorique :} $\log_2(51) \approx \mathbf{5{,}67\text{ bits}}$ (rang \#1).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Avantages pour la Sécurité}
+                \small
+                \begin{itemize}
+                    \item Indépendant du décodage et des collisions.
+                    \item Modélise directement le risque d'\textbf{Inférence d'Appartenance (MIA)}.
+                    \item Sensibilité extrême dès les très faibles fréquences ($k=1$).
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Résultats d'Exposure sur les Checkpoints GPU}
+    \subtitleline{Figure 2 : Mesure de l'Exposure en bits sur 50 variantes par canari}
+    \begin{columns}[T]
+        \begin{column}{0.54\textwidth}
+            \slideimg{figure2_exposure_carlini.png}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Résultats Mesurés (bits)}
+                \renewcommand{\arraystretch}{1.05}
+                {\footnotesize
+                \begin{tabularx}{\textwidth}{l c c c}
+                    \rowcolor{TSPblue}\color{white}\textbf{Fréq.} & \color{white}\textbf{Ép. 1} & \color{white}\textbf{Ép. 10} & \color{white}\textbf{Ép. 20-50} \\
+                    k = 1 & 3.51 & 5.57 & \textbf{5.67} \\
+                    \rowcolor{TSPgrey} k = 5 & 5.04 & \textbf{5.67} & \textbf{5.67} \\
+                    k = 10 & \textbf{5.67} & \textbf{5.67} & \textbf{5.67} \\
+                    \rowcolor{TSPgrey} k = 50 & \textbf{5.67} & \textbf{5.67} & \textbf{5.67} \\
+                \end{tabularx}
+                }
+            \end{block}
+            \begin{alertblock}{Saturation Précoce}
+                \footnotesize Dès $k \ge 10$, l'Exposure atteint le plafond théorique ($5.67$ bits) dès l'époque 1. À l'époque 20, 100\% des canaris sont au rang \#1.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Espace Réservé : Analyses Détaillées Fatima-Zahra}
+    \subtitleline{Section modulaire prête pour l'intégration des résultats approfondis du binôme}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Inférence d'Appartenance (MIA)}
+                \begin{itemize}
+                    \item \textbf{Objectif :} Évaluer le taux de succès d'attaque MIA par seuil de perte (Yeom et al. 2018).
+                    \item Courbes ROC et AUC mesurées entre le jeu d'entraînement et le jeu de validation.
+                    \item Détection des canaris rares ($k=1$) selon le seuil optimal.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Intégration Complémentaire}
+                \begin{itemize}
+                    \item Résultats des variantes analysées sur le GPU 1.
+                    \item Comparaison des distributions de rang par canari individuel.
+                    \item \textit{Diapositive synchronisée et prête à recevoir les graphiques de distribution de Fatima-Zahra dès finalisation de ses runs.}
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =============================================================
+% SECTION 6 : SYNTHESE, INTERPRETATIONS & PERSPECTIVES
+% =============================================================
+\section{Synthèse Croisée, Interprétations \& Perspectives}
+
+\begin{frame}{Le Résultat Maître du PFE : Corrélation Directe}
+    \subtitleline{Figure 4 : Preuve graphique que l'overfitting déclenche la fuite de confidentialité}
+    \begin{columns}[T]
+        \begin{column}{0.54\textwidth}
+            \slideimg{figure4_pfe_synthesis_memorization.png}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Analyse Conjointe}
+                \small
+                \begin{itemize}
+                    \item \textbf{Avant ép. 15 :} Gap négatif ou nul $\rightarrow$ Extraction verbatim strictement à \textbf{0\%}.
+                    \item \textbf{Époque 20 :} Rupture de généralisation $\rightarrow$ Apparition de \textbf{20\% d'extraction verbatim}.
+                    \item \textbf{Époque 50 :} Overfitting extrême $\rightarrow$ \textbf{30\% d'extraction exacte} et 40\% de fuite haute fidélité.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Dualité Théorique : Exposure vs Extraction}
+    \subtitleline{Enseignement conceptuel majeur pour le mémoire et la soutenance}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{1. L'Exposure Précède l'Extraction}
+                \begin{itemize}
+                    \item L'Exposure sature dès l'époque 10 ($5.67$ bits), alors que l'extraction boîte noire est encore à $0\%$.
+                    \item \textbf{Implication Sécurité :} Un secret est exposé aux attaques de type inférence (MIA) bien avant qu'un attaquant externe ne puisse le voler en complétion textuelle.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{2. Le Bouclier de la Rareté ($k=1$)}
+                \begin{itemize}
+                    \item Même à l'époque 50 en surapprentissage maximal, les canaris $k=1$ ont un taux d'extraction verbatim de \textbf{0.0\%}.
+                    \item La longue traîne protège contre l'extraction déterministe en boîte noire, mais pas contre le MIA (Exposure à 5.67 bits).
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Bilan du Sprint 3 \& Feuille de Route Sprint 4}
+    \subtitleline{Transition vers les contre-mesures de confidentialité différentielle}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Acquis Majeurs du Sprint 3}
+                \begin{itemize}
+                    \item Pipeline d'expérimentation validé de bout en bout sur les GPU L40S de TSP.
+                    \item Extraction verbatim démontrée à 100\% sur clés cryptographiques de 19 caractères.
+                    \item Données et visualisations scellées pour le rapport.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Perspectives Sprint 4 (Défense)}
+                \begin{itemize}
+                    \item \textbf{Contre-mesure 1 (DP-SGD) :} Intégration d'Opacus (bruit gaussien $\sigma$, clipping $C$) et mesure du trade-off confidentialité vs utilité.
+                    \item \textbf{Contre-mesure 2 (Déduplication) :} Déduplication MinHash pour ramener $k \to 1$.
+                    \item \textbf{Contre-mesure 3 (Early Stopping) :} Arrêt au point d'inflexion (époque 15) pour bloquer l'overfitting.
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+    \centering
+    \vfill
+    {\usebeamercolor[fg]{title}\huge\textbf{Merci pour votre attention}}\par
+    \vspace{0.8cm}
+    {\usebeamercolor[fg]{subtitle}\Large Questions \& Discussion\par}
+    \vspace{0.8cm}
+    {\small \textbf{Emmanuel SININI} \& \textbf{Fatima-Zahra Rhoulam}\par
+    Télécom SudParis $\cdot$ VAP SSR\par}
+    \vfill
+\end{frame}
+
+\end{document}

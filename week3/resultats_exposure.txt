@@ -1,0 +1,91 @@
+==========================================================
+ RAPPORT GLOBAL D'EXPOSURE & PERPLEXITÉ (CARLINI ET AL.)
+==========================================================
+
+>>> 1. EXPOSURE SUR EPOQUE 1 (RÉFÉRENCE INITIALE)
+[+] Graine fixée à 42
+
+=== EVALUATION EXPOSURE & MIA (Epoque 1) ===
+[*] Modele cible       : checkpoints/ep1
+[*] Canaris charges    : 50
+[*] Variantes par test : 50
+[+] PyTorch detecte. Chargement du modele...
+[+] Modele charge sur : cuda
+
+=================================================================
+ RESULTATS D EXPOSURE (The Secret Sharer - Carlini 2019)
+=================================================================
+| k = 1    | Canaris: 15 | Exposure Moyenne: 3.51 / 5.67 bits |
+| k = 5    | Canaris: 15 | Exposure Moyenne: 5.04 / 5.67 bits |
+| k = 10   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 50   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+=================================================================
+
+[+] Rapport d audit enregistre dans : week3/results/fatimazahra/exposure_epoch_1.json
+
+
+>>> 2. EXPOSURE SUR EPOQUE 10 (ZONE DE TRANSITION)
+[+] Graine fixée à 42
+
+=== EVALUATION EXPOSURE & MIA (Epoque 10) ===
+[*] Modele cible       : checkpoints/ep10
+[*] Canaris charges    : 50
+[*] Variantes par test : 50
+[+] PyTorch detecte. Chargement du modele...
+[+] Modele charge sur : cuda
+
+=================================================================
+ RESULTATS D EXPOSURE (The Secret Sharer - Carlini 2019)
+=================================================================
+| k = 1    | Canaris: 15 | Exposure Moyenne: 5.57 / 5.67 bits |
+| k = 5    | Canaris: 15 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 10   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 50   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+=================================================================
+
+[+] Rapport d audit enregistre dans : week3/results/fatimazahra/exposure_epoch_10.json
+
+
+>>> 3. EXPOSURE SUR EPOQUE 20 (ZONE CRITIQUE)
+[+] Graine fixée à 42
+
+=== EVALUATION EXPOSURE & MIA (Epoque 20) ===
+[*] Modele cible       : checkpoints/ep20
+[*] Canaris charges    : 50
+[*] Variantes par test : 50
+[+] PyTorch detecte. Chargement du modele...
+[+] Modele charge sur : cuda
+
+=================================================================
+ RESULTATS D EXPOSURE (The Secret Sharer - Carlini 2019)
+=================================================================
+| k = 1    | Canaris: 15 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 5    | Canaris: 15 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 10   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 50   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+=================================================================
+
+[+] Rapport d audit enregistre dans : week3/results/fatimazahra/exposure_epoch_20.json
+
+
+>>> 4. EXPOSURE SUR EPOQUE 50 (SURAPPRENTISSAGE MAXIMAL)
+[+] Graine fixée à 42
+
+=== EVALUATION EXPOSURE & MIA (Epoque 50) ===
+[*] Modele cible       : checkpoints/ep50
+[*] Canaris charges    : 50
+[*] Variantes par test : 50
+[+] PyTorch detecte. Chargement du modele...
+[+] Modele charge sur : cuda
+
+=================================================================
+ RESULTATS D EXPOSURE (The Secret Sharer - Carlini 2019)
+=================================================================
+| k = 1    | Canaris: 15 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 5    | Canaris: 15 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 10   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+| k = 50   | Canaris: 10 | Exposure Moyenne: 5.67 / 5.67 bits |
+=================================================================
+
+[+] Rapport d audit enregistre dans : week3/results/fatimazahra/exposure_epoch_50.json
+

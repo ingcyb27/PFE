@@ -1,0 +1,363 @@
+{
+  "epoch": 1,
+  "model_path": "EleutherAI/pythia-160m",
+  "max_possible_exposure": 5.672,
+  "mean_exposure_by_k": {
+    "k_1": 1.243,
+    "k_5": 1.272,
+    "k_10": 1.308,
+    "k_50": 2.012
+  },
+  "detailed_canaries": [
+    {
+      "canary_id": "canary_000",
+      "k": 1,
+      "loss": 3.7282,
+      "rank": 21,
+      "exposure_bits": 1.28
+    },
+    {
+      "canary_id": "canary_001",
+      "k": 1,
+      "loss": 3.7604,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_002",
+      "k": 1,
+      "loss": 3.7096,
+      "rank": 19,
+      "exposure_bits": 1.424
+    },
+    {
+      "canary_id": "canary_003",
+      "k": 1,
+      "loss": 3.7583,
+      "rank": 19,
+      "exposure_bits": 1.424
+    },
+    {
+      "canary_id": "canary_004",
+      "k": 1,
+      "loss": 3.7009,
+      "rank": 20,
+      "exposure_bits": 1.35
+    },
+    {
+      "canary_id": "canary_005",
+      "k": 1,
+      "loss": 3.7338,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_006",
+      "k": 1,
+      "loss": 3.6971,
+      "rank": 17,
+      "exposure_bits": 1.585
+    },
+    {
+      "canary_id": "canary_007",
+      "k": 1,
+      "loss": 3.7263,
+      "rank": 24,
+      "exposure_bits": 1.087
+    },
+    {
+      "canary_id": "canary_008",
+      "k": 1,
+      "loss": 3.7051,
+      "rank": 22,
+      "exposure_bits": 1.213
+    },
+    {
+      "canary_id": "canary_009",
+      "k": 1,
+      "loss": 3.7068,
+      "rank": 18,
+      "exposure_bits": 1.503
+    },
+    {
+      "canary_id": "canary_010",
+      "k": 1,
+      "loss": 3.7461,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_011",
+      "k": 1,
+      "loss": 3.7564,
+      "rank": 29,
+      "exposure_bits": 0.814
+    },
+    {
+      "canary_id": "canary_012",
+      "k": 1,
+      "loss": 3.6861,
+      "rank": 16,
+      "exposure_bits": 1.672
+    },
+    {
+      "canary_id": "canary_013",
+      "k": 1,
+      "loss": 3.7345,
+      "rank": 29,
+      "exposure_bits": 0.814
+    },
+    {
+      "canary_id": "canary_014",
+      "k": 1,
+      "loss": 3.715,
+      "rank": 25,
+      "exposure_bits": 1.029
+    },
+    {
+      "canary_id": "canary_015",
+      "k": 5,
+      "loss": 3.6616,
+      "rank": 17,
+      "exposure_bits": 1.585
+    },
+    {
+      "canary_id": "canary_016",
+      "k": 5,
+      "loss": 3.6989,
+      "rank": 25,
+      "exposure_bits": 1.029
+    },
+    {
+      "canary_id": "canary_017",
+      "k": 5,
+      "loss": 3.7432,
+      "rank": 21,
+      "exposure_bits": 1.28
+    },
+    {
+      "canary_id": "canary_018",
+      "k": 5,
+      "loss": 3.6615,
+      "rank": 22,
+      "exposure_bits": 1.213
+    },
+    {
+      "canary_id": "canary_019",
+      "k": 5,
+      "loss": 3.6547,
+      "rank": 15,
+      "exposure_bits": 1.766
+    },
+    {
+      "canary_id": "canary_020",
+      "k": 5,
+      "loss": 3.7058,
+      "rank": 14,
+      "exposure_bits": 1.865
+    },
+    {
+      "canary_id": "canary_021",
+      "k": 5,
+      "loss": 3.686,
+      "rank": 28,
+      "exposure_bits": 0.865
+    },
+    {
+      "canary_id": "canary_022",
+      "k": 5,
+      "loss": 3.7253,
+      "rank": 24,
+      "exposure_bits": 1.087
+    },
+    {
+      "canary_id": "canary_023",
+      "k": 5,
+      "loss": 3.7411,
+      "rank": 26,
+      "exposure_bits": 0.972
+    },
+    {
+      "canary_id": "canary_024",
+      "k": 5,
+      "loss": 3.7049,
+      "rank": 21,
+      "exposure_bits": 1.28
+    },
+    {
+      "canary_id": "canary_025",
+      "k": 5,
+      "loss": 3.7467,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_026",
+      "k": 5,
+      "loss": 3.6753,
+      "rank": 18,
+      "exposure_bits": 1.503
+    },
+    {
+      "canary_id": "canary_027",
+      "k": 5,
+      "loss": 3.8572,
+      "rank": 33,
+      "exposure_bits": 0.628
+    },
+    {
+      "canary_id": "canary_028",
+      "k": 5,
+      "loss": 3.6963,
+      "rank": 21,
+      "exposure_bits": 1.28
+    },
+    {
+      "canary_id": "canary_029",
+      "k": 5,
+      "loss": 3.6407,
+      "rank": 17,
+      "exposure_bits": 1.585
+    },
+    {
+      "canary_id": "canary_030",
+      "k": 10,
+      "loss": 3.6503,
+      "rank": 16,
+      "exposure_bits": 1.672
+    },
+    {
+      "canary_id": "canary_031",
+      "k": 10,
+      "loss": 3.7202,
+      "rank": 26,
+      "exposure_bits": 0.972
+    },
+    {
+      "canary_id": "canary_032",
+      "k": 10,
+      "loss": 3.6652,
+      "rank": 17,
+      "exposure_bits": 1.585
+    },
+    {
+      "canary_id": "canary_033",
+      "k": 10,
+      "loss": 3.8227,
+      "rank": 35,
+      "exposure_bits": 0.543
+    },
+    {
+      "canary_id": "canary_034",
+      "k": 10,
+      "loss": 3.6697,
+      "rank": 13,
+      "exposure_bits": 1.972
+    },
+    {
+      "canary_id": "canary_035",
+      "k": 10,
+      "loss": 3.7149,
+      "rank": 28,
+      "exposure_bits": 0.865
+    },
+    {
+      "canary_id": "canary_036",
+      "k": 10,
+      "loss": 3.7397,
+      "rank": 19,
+      "exposure_bits": 1.424
+    },
+    {
+      "canary_id": "canary_037",
+      "k": 10,
+      "loss": 3.654,
+      "rank": 12,
+      "exposure_bits": 2.087
+    },
+    {
+      "canary_id": "canary_038",
+      "k": 10,
+      "loss": 3.6867,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_039",
+      "k": 10,
+      "loss": 3.7728,
+      "rank": 29,
+      "exposure_bits": 0.814
+    },
+    {
+      "canary_id": "canary_040",
+      "k": 50,
+      "loss": 3.5395,
+      "rank": 11,
+      "exposure_bits": 2.213
+    },
+    {
+      "canary_id": "canary_041",
+      "k": 50,
+      "loss": 3.5033,
+      "rank": 7,
+      "exposure_bits": 2.865
+    },
+    {
+      "canary_id": "canary_042",
+      "k": 50,
+      "loss": 3.6564,
+      "rank": 18,
+      "exposure_bits": 1.503
+    },
+    {
+      "canary_id": "canary_043",
+      "k": 50,
+      "loss": 3.618,
+      "rank": 10,
+      "exposure_bits": 2.35
+    },
+    {
+      "canary_id": "canary_044",
+      "k": 50,
+      "loss": 3.6007,
+      "rank": 11,
+      "exposure_bits": 2.213
+    },
+    {
+      "canary_id": "canary_045",
+      "k": 50,
+      "loss": 3.6949,
+      "rank": 25,
+      "exposure_bits": 1.029
+    },
+    {
+      "canary_id": "canary_046",
+      "k": 50,
+      "loss": 3.7093,
+      "rank": 23,
+      "exposure_bits": 1.149
+    },
+    {
+      "canary_id": "canary_047",
+      "k": 50,
+      "loss": 3.5967,
+      "rank": 11,
+      "exposure_bits": 2.213
+    },
+    {
+      "canary_id": "canary_048",
+      "k": 50,
+      "loss": 3.6858,
+      "rank": 18,
+      "exposure_bits": 1.503
+    },
+    {
+      "canary_id": "canary_049",
+      "k": 50,
+      "loss": 3.5295,
+      "rank": 6,
+      "exposure_bits": 3.087
+    }
+  ]
+}

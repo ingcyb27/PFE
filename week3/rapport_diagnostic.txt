@@ -1,0 +1,69 @@
+=== 1. CHEMINS ET DOSSIERS ===
+/netfs/tsp/student/2025/esinini/week3
+total 28
+drwxrwxrwx 7 esinini 1763 4096 Oct 24 17:52 .
+drwxrwxrwx 7 esinini 1763 4096 Oct 24 18:37 ..
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 ep1
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 ep10
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 ep20
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 ep5
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 ep50
+total 12
+drwxr-xr-x 2 esinini 1763 4096 Oct 24 17:52 .
+drwxrwxrwx 7 esinini 1763 4096 Oct 24 17:52 ..
+-rw-r--r-- 1 esinini 1763   63 Oct 24 17:52 checkpoint_info.json
+=== 2. EMPLACEMENT DES VRAIS POIDS (.safetensors / config.json) ===
+/netfs/tsp/student/2025/esinini/.cache/huggingface/hub/models--EleutherAI--pythia-160m/snapshots/50f5173d932e8e61f858120bcb800b97af589f46/config.json
+/netfs/tsp/student/2025/esinini/.cache/huggingface/hub/models--EleutherAI--pythia-160m/snapshots/50f5173d932e8e61f858120bcb800b97af589f46/model.safetensors
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep50/config.json
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep50/model.safetensors
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep10/config.json
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep10/model.safetensors
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep1/config.json
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep1/model.safetensors
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep5/config.json
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep5/model.safetensors
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep20/config.json
+/netfs/tsp/student/2025/esinini/week3/week3/checkpoints/ep20/model.safetensors
+=== 3. METRIQUES D'ENTRAINEMENT ===
+==> /netfs/tsp/student/2025/esinini/week3/runs_logs/training_metrics.csv <==
+41,0.9636,3.4861
+42,0.8802,3.4903
+43,0.8095,3.5095
+44,0.7565,3.5243
+45,0.6941,3.5410
+46,0.6399,3.5649
+47,0.5777,3.5698
+48,0.5217,3.5886
+49,0.4690,3.6033
+50,0.4235,3.6147
+
+==> /netfs/tsp/student/2025/esinini/week3/week3/runs_logs/training_metrics.csv <==
+41,0.0378,0.5865
+42,0.0357,0.7188
+43,0.0346,0.8014
+44,0.0343,0.7743
+45,0.0337,0.7285
+46,0.0343,0.8005
+47,0.0355,0.6121
+48,0.0349,0.7417
+49,0.0341,0.8816
+50,0.0339,0.8110
+=== 4. TEST DE L'ATTAQUE ===
+[+] Graine fixee a 42
+
+=== ATTAQUE D EXTRACTION VERBATIM & ZLIB (Epoque 50) ===
+[*] Modele cible : checkpoints/ep50
+[*] Nombre de canaris : 50
+Traceback (most recent call last):
+  File "/netfs/tsp/student/2025/esinini/week3/attack_extraction.py", line 153, in <module>
+    main()
+  File "/netfs/tsp/student/2025/esinini/week3/attack_extraction.py", line 150, in main
+    run_extraction_attack(args.model_path, args.canaries_path, args.epoch, args.output_dir)
+  File "/netfs/tsp/student/2025/esinini/week3/attack_extraction.py", line 85, in run_extraction_attack
+    model = AutoModelForCausalLM.from_pretrained(model_path).to(device)
+  File "/netfs/tsp/student/2025/esinini/.conda/envs/pfe_memorization/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 526, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+  File "/netfs/tsp/student/2025/esinini/.conda/envs/pfe_memorization/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 1049, in from_pretrained
+    raise ValueError(
+ValueError: Unrecognized model in checkpoints/ep50. Should have a `model_type` key in its config.json, or contain one of the following strings in its name: albert, align, altclip, audio-spectrogram-transformer, autoformer, bark, bart, beit, bert, bert-generation, big_bird, bigbird_pegasus, biogpt, bit, blenderbot, blenderbot-small, blip, blip-2, bloom, bridgetower, bros, camembert, canine, chameleon, chinese_clip, chinese_clip_vision_model, clap, clip, clip_text_model, clip_vision_model, clipseg, clvp, code_llama, codegen, cohere, conditional_detr, convbert, convnext, convnextv2, cpmant, ctrl, cvt, dac, data2vec-audio, data2vec-text, data2vec-vision, dbrx, deberta, deberta-v2, decision_transformer, deformable_detr, deit, depth_anything, deta, detr, dinat, dinov2, distilbert, donut-swin, dpr, dpt, efficientformer, efficientnet, electra, encodec, encoder-decoder, ernie, ernie_m, esm, falcon, falcon_mamba, fastspeech2_conformer, flaubert, flava, fnet, focalnet, fsmt, funnel, fuyu, gemma, gemma2, git, glm, glpn, gpt-sw3, gpt2, gpt_bigcode, gpt_neo, gpt_neox, gpt_neox_japanese, gptj, gptsan-japanese, granite, granitemoe, graphormer, grounding-dino, groupvit, hiera, hubert, ibert, idefics, idefics2, idefics3, imagegpt, informer, instructblip, instructblipvideo, jamba, jetmoe, jukebox, kosmos-2, layoutlm, layoutlmv2, layoutlmv3, led, levit, lilt, llama, llava, llava_next, llava_next_video, llava_onevision, longformer, longt5, luke, lxmert, m2m_100, mamba, mamba2, marian, markuplm, mask2former, maskformer, maskformer-swin, mbart, mctct, mega, megatron-bert, mgp-str, mimi, mistral, mixtral, mllama, mobilebert, mobilenet_v1, mobilenet_v2, mobilevit, mobilevitv2, moshi, mpnet, mpt, mra, mt5, musicgen, musicgen_melody, mvp, nat, nemotron, nezha, nllb-moe, nougat, nystromformer, olmo, olmoe, omdet-turbo, oneformer, open-llama, openai-gpt, opt, owlv2, owlvit, paligemma, patchtsmixer, patchtst, pegasus, pegasus_x, perceiver, persimmon, phi, phi3, phimoe, pix2struct, pixtral, plbart, poolformer, pop2piano, prophetnet, pvt, pvt_v2, qdqbert, qwen2, qwen2_audio, qwen2_audio_encoder, qwen2_moe, qwen2_vl, rag, realm, recurrent_gemma, reformer, regnet, rembert, resnet, retribert, roberta, roberta-prelayernorm, roc_bert, roformer, rt_detr, rt_detr_resnet, rwkv, sam, seamless_m4t, seamless_m4t_v2, segformer, seggpt, sew, sew-d, siglip, siglip_vision_model, speech-encoder-decoder, speech_to_text, speech_to_text_2, speecht5, splinter, squeezebert, stablelm, starcoder2, superpoint, swiftformer, swin, swin2sr, swinv2, switch_transformers, t5, table-transformer, tapas, time_series_transformer, timesformer, timm_backbone, trajectory_transformer, transfo-xl, trocr, tvlt, tvp, udop, umt5, unispeech, unispeech-sat, univnet, upernet, van, video_llava, videomae, vilt, vipllava, vision-encoder-decoder, vision-text-dual-encoder, visual_bert, vit, vit_hybrid, vit_mae, vit_msn, vitdet, vitmatte, vits, vivit, wav2vec2, wav2vec2-bert, wav2vec2-conformer, wavlm, whisper, xclip, xglm, xlm, xlm-prophetnet, xlm-roberta, xlm-roberta-xl, xlnet, xmod, yolos, yoso, zamba, zoedepth

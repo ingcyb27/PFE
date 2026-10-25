@@ -1,0 +1,740 @@
+% !TEX TS-program = xelatex
+\documentclass[aspectratio=169, 10pt, table]{beamer}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{french}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[export]{adjustbox}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+\urlstyle{same}
+\usepackage{microtype}
+\usetikzlibrary{shapes.geometric, shapes.misc, arrows.meta, positioning, calc, shadows}
+
+% Fonts
+\IfFontExistsTF{Liberation Sans Narrow}{
+    \setmainfont{Liberation Sans Narrow}
+    \setsansfont{Liberation Sans Narrow}
+}{
+    \IfFontExistsTF{Arial Narrow}{
+        \setmainfont{Arial Narrow}
+        \setsansfont{Arial Narrow}
+    }{
+        \setsansfont{TeX Gyre Heros}
+    }
+}
+
+% Colors
+\definecolor{TSPblue}{HTML}{0052A0}
+\definecolor{TSPcyan}{HTML}{00A3E0}
+\definecolor{TSPblack}{HTML}{1D1D1B}
+\definecolor{TSPdark}{RGB}{128, 0, 32}
+\definecolor{TSPgrey}{HTML}{F0F0F0}
+\definecolor{TSPtext}{HTML}{333333}
+
+% Theme config
+\setbeamercolor{normal text}{fg=TSPtext,bg=white}
+\setbeamercolor{title}{fg=TSPblue}
+\setbeamercolor{subtitle}{fg=TSPcyan}
+\setbeamercolor{author}{fg=TSPblue}
+\setbeamercolor{institute}{fg=TSPblue}
+\setbeamercolor{date}{fg=TSPblue}
+\setbeamercolor{frametitle}{fg=TSPblue}
+\setbeamercolor{section in head/foot}{fg=TSPblue}
+\setbeamercolor{footline}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{itemize item}{fg=TSPblue}
+\setbeamercolor{itemize subitem}{fg=TSPblue}
+\setbeamercolor{enumerate item}{bg=TSPblue,fg=white}
+\setbeamercolor{block title}{bg=TSPblue,fg=white}
+\setbeamercolor{block body}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{block title alerted}{bg=TSPdark,fg=white}
+\setbeamercolor{block body alerted}{bg=TSPgrey,fg=TSPtext}
+\setbeamercolor{block title example}{bg=TSPblue,fg=white}
+\setbeamercolor{block body example}{bg=TSPgrey,fg=TSPtext}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{section in toc}{fg=TSPblue!35}
+\setbeamercolor{section in toc shaded}{fg=TSPblue!35}
+\setbeamertemplate{section in toc}{%
+  \ifnum\inserttocsectionnumber=\insertsectionnumber
+    \textcolor{TSPblue}{\textbf{\inserttocsectionnumber. \inserttocsection}}
+  \else
+    \textcolor{TSPblue!35}{\inserttocsectionnumber. \inserttocsection}
+  \fi
+}
+
+% Header
+\setbeamertemplate{headline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=8ex,dp=2ex,left]{headbox}
+        \hspace*{2ex}
+        \IfFileExists{tsp_logo.png}{
+            \includegraphics[height=6ex]{tsp_logo.png}
+        }{
+            \fbox{tsp\_logo.png}
+        }
+        \hfill
+        \usebeamerfont{section in head/foot}\color{TSPblue}
+        \insertsectionhead
+        \hspace*{2ex}
+    \end{beamercolorbox}%
+    }
+}
+
+% Frame title
+\setbeamertemplate{frametitle}{
+    \vspace*{1ex}
+    \textbf{\insertframetitle}
+    \par\vskip0.5ex
+    \textcolor{TSPdark}{\hrule height 0.5pt}
+}
+
+% Footer
+\setbeamertemplate{footline}{
+    \leavevmode%
+    \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=3ex,dp=1ex]{footline}
+        \hspace*{2ex}
+        Télécom SudParis \hfill
+        Sécurité de l'IA Générative \hfill
+        \insertframenumber
+        \hspace*{2ex}
+    \end{beamercolorbox}%
+    }
+}
+
+% Bullets
+\setbeamertemplate{itemize item}{\raisebox{0.12ex}{\scalebox{0.8}{$\blacktriangleright$}}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.12ex}{\scalebox{0.6}{$\blacktriangleright$}}}
+
+% Block margins & ragged right
+\setbeamertemplate{block begin}{
+  \vskip\smallskipamount
+  \begin{beamercolorbox}[leftskip=1ex,colsep*=.75ex]{block title}
+    \usebeamerfont*{block title}\insertblocktitle
+  \end{beamercolorbox}%
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[dp=1ex,dp=1ex,leftskip=1ex,vmode,colsep*=.75ex]{block body}%
+    \ifbeamercolorempty[bg]{block body}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+    \raggedright\hyphenpenalty=10000
+}
+\setbeamertemplate{block end}{
+  \end{beamercolorbox}\vskip\smallskipamount
+}
+\setbeamertemplate{block alerted begin}{
+  \vskip\smallskipamount
+  \begin{beamercolorbox}[leftskip=1ex,colsep*=.75ex]{block title alerted}
+    \usebeamerfont*{block title alerted}\insertblocktitle
+  \end{beamercolorbox}%
+  {\ifbeamercolorempty[bg]{block body alerted}{}{\nointerlineskip\vskip-0.5pt}}%
+  \usebeamerfont{block body}%
+  \begin{beamercolorbox}[dp=1ex,dp=1ex,leftskip=1ex,vmode,colsep*=.75ex]{block body alerted}%
+    \ifbeamercolorempty[bg]{block body alerted}{\vskip-.25ex}{\vskip-.75ex}\vbox{}%
+    \raggedright\hyphenpenalty=10000
+}
+\setbeamertemplate{block alerted end}{
+  \end{beamercolorbox}\vskip\smallskipamount
+}
+
+% General raggedright for all frames
+\AtBeginEnvironment{frame}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{itemize}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{tabularx}{\raggedright\hyphenpenalty=10000}
+\AtBeginEnvironment{column}{\raggedright\hyphenpenalty=10000}
+
+% Title page
+\setbeamertemplate{title page}{
+    \centering
+    \vspace*{2ex}
+    \IfFileExists{tsp_logo.png}{
+        \includegraphics[height=1.5cm]{tsp_logo.png}
+    }{
+        \fbox{tsp\_logo.png}
+    }
+    \vfill
+    
+    {\usebeamercolor[fg]{title}\huge\textbf{Sécurité de l'IA Générative}\par}
+    \vspace*{1ex}
+    {\usebeamercolor[fg]{subtitle}\large Étude de la mémorisation dans les modèles génératifs\par}
+    \vspace*{1ex}
+    {\fontsize{9}{11}\selectfont Liens avec le surapprentissage et implications pour la confidentialité des données, un angle sécurité\par}
+    \vfill
+    {\fontsize{10}{12}\selectfont 
+    \textbf{Présenté par :} Emmanuel SININI et Fatima-Zahra Rhoulam\par
+    \vspace*{0.8ex}
+    \textbf{Encadrants :} Maryline Laurent (TSP) $\cdot$ Faiz Taleb (TSP / EDF)\par}
+    \vspace*{1ex}
+    {\fontsize{11}{13}\selectfont \textbf{Télécom SudParis}\par}
+    \vspace*{1ex}
+    {\fontsize{10}{12}\selectfont 1\textsuperscript{ère} réunion de projet\par}
+    \vfill
+}
+
+\newcommand{\slideimg}[2][]{
+    \IfFileExists{#2}{
+        \includegraphics[max width=\textwidth, max height=0.7\textheight, keepaspectratio, #1]{#2}
+    }{
+        \fbox{Image manquante: #2}
+    }
+}
+
+% Custom macros for formatting
+\newcommand{\obj}[1]{\tikz[baseline=-0.8ex]\node[fill=TSPblue, text=white, inner sep=2pt, font=\small\bfseries, minimum size=3.5mm]{#1};}
+\newcommand{\cnum}[1]{\tikz[baseline=-0.8ex]\node[circle, fill=TSPblue, text=white, inner sep=1pt, font=\scriptsize\bfseries]{#1};}
+\newcommand{\subtitleline}[1]{{\small\itshape\color{TSPcyan}#1\par}\vspace{0.2cm}}
+
+\AtBeginSection[]{
+  \begin{frame}{Plan}
+    \tableofcontents
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+    \titlepage
+\end{frame}
+
+\section{Contexte : L'IA Générative}
+
+\begin{frame}{Contexte}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{L'IA générative crée du contenu réaliste}
+                Deux familles dominent : les GAN (Goodfellow) et les modèles à mécanisme d'attention (Vaswani) à la base de ChatGPT, DALL-E, etc.\\
+                \vspace{0.2cm}
+                Ces modèles génèrent des contenus de \textbf{même nature} que leurs données d'entraînement : le risque de mémorisation devient direct et exploitable.
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Le risque identifié}
+                La mémorisation permet des \textbf{attaques d'inversion de modèle} : extraction de données sensibles, de paramètres ou d'architecture.\\
+                \vspace{0.2cm}
+                Déjà démontré : extraction sur LLM (Carlini 2021), fuite de PII (Lukas), détection d'appartenance sur GAN de visages (Webster 2023).
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Les GAN - Generative Adversarial Networks}
+    \begin{columns}[c]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \slideimg{image_slide_3.png}
+            
+            \vspace{0.2cm}
+            {\footnotesize\url{https://www.geeksforgeeks.org/machine-learning/basics-of-generative-adversarial-networks-gans/}}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Challenges :}
+            \begin{itemize}
+                \item Mode collapse : G se met à produire toujours le même type de sortie (peu de diversité), parce que c'est suffisant pour tromper D.
+                \item Mémorisation : au lieu d'apprendre la distribution générale des visages (par exemple), G peut apprendre à reproduire quasiment à l'identique certains visages précis du jeu d'entraînement surtout ceux qui sont rares ou atypiques (lien direct avec Feldman et la longue traîne).
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Les modèles à mécanisme d'attention (1/3)}
+    \begin{columns}[c]
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item \textbf{Le problème résolu :} avant 2017, réseaux récurrents (RNN, LSTM) qui lisent mot par mot, dans l'ordre $\rightarrow$ lents, « oublient » les débuts de phrase longue
+                \item \textbf{L'idée centrale, l'attention :} le modèle regarde toute la séquence à la fois ; pour chaque mot, il calcule à quel point « faire attention » à chacun des autres pour construire sa représentation
+                \item \textbf{Trois vecteurs par token} (mot ou fragment de mot) :
+                \begin{itemize}
+                    \item Query (Q) « qu'est-ce que je cherche ? »
+                    \item Key (K) « qu'est-ce que je peux offrir ? »
+                    \item Value (V) « quelle information je transmets si on m'interroge »
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \slideimg{image_slide_4.png}
+            
+            \vspace{0.2cm}
+            {\footnotesize\url{https://www.linkedin.com/pulse/ia-les-modèles-dattention-jean-baptiste-executive-mba-mpa-msc-ma-cheie/}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Le Transformer}
+    \begin{columns}[c]
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item Architecture complète construite autour de ce mécanisme
+                \item \textbf{Multi-head attention :} plusieurs attentions en parallèle (« têtes »), chacune capte un type de relation différent (syntaxique, sémantique…)
+                \item \textbf{Feed-forward layers,} empilées en plusieurs couches
+                \item \textbf{Positional encoding :} l'attention regarde tout en même temps (sans ordre inhérent) $\rightarrow$ on injecte la position des mots dans la séquence
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \slideimg{image_slide_5.png}
+            
+            \vspace{0.2cm}
+            {\footnotesize\url{https://arxiv.org/abs/1706.03762}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Attention et mémorisation}
+    \begin{alertblock}{}
+        \begin{itemize}
+            \item Regarder toute la séquence à la fois $\rightarrow$ très efficace pour retenir des motifs précis, y compris des séquences entières rencontrées à l'entraînement
+            \item Attaques d'extraction (Carlini 2021) : on donne un préfixe, le modèle continue ; il utilise l'attention pour « retrouver » la suite exacte s'il l'a mémorisée
+            \item Perplexité anormalement basse (signe de mémorisation) : le modèle est extrêmement confiant sur la suite d'une séquence déjà vue, car l'attention l'a apprise à reconnaître presque comme un identifiant
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Les modèles de diffusion : Stable Diffusion, DALL-E (1/2)}
+    \textbf{L'idée centrale :} apprendre à débruiter progressivement une image, puis utiliser ce savoir-faire à l'envers pour générer une image à partir de bruit pur.
+    
+    \vspace{0.4cm}
+    \textbf{– Le processus d'entraînement (forward process) :}
+    \begin{itemize}
+        \item On part d'une vraie image du jeu d'entraînement.
+        \item On lui ajoute du bruit gaussien, petit à petit, sur des centaines d'étapes (T étapes), jusqu'à obtenir du bruit pur (image totalement illisible).
+        \item À chaque étape, le modèle est entraîné à prédire quel bruit a été ajouté autrement dit, à faire le chemin inverse : « si je vois cette image légèrement bruitée, quelle était l'image un peu moins bruitée juste avant ? »
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Les modèles de diffusion : Stable Diffusion, DALL-E (2/2)}
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \textbf{– La génération (reverse process) :}
+            \begin{itemize}
+                \item On part d'un bruit aléatoire pur.
+                \item On applique le modèle T fois de suite, chaque passage retirant un peu de bruit.
+                \item Au bout du processus, on obtient une image « neuve », qui suit la même distribution statistique que les images d'entraînement.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \slideimg{image_slide_6.png}
+            
+            \vspace{0.2cm}
+            {\footnotesize\url{https://www.linkedin.com/pulse/ia-les-modèles-dattention-jean-baptiste-executive-mba-mpa-msc-ma-cheie/}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Attaques sur les systèmes d'IA}
+
+\begin{frame}{Les attaques sur un système IA}
+    \centering
+    \begin{table}
+        \renewcommand{\arraystretch}{1.4}
+        \small
+        \begin{tabularx}{\textwidth}{>{\bfseries}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+            \toprule
+            \rowcolor{TSPblue}\color{white}\textbf{\footnotesize Phase} & \color{white}\textbf{\footnotesize Manipulation} & \color{white}\textbf{\footnotesize Infection} & \color{white}\textbf{\footnotesize Exfiltration} \\
+            \midrule
+            Phase d'apprentissage & & Attaques par empoisonnement (poisoning attacks) ; Attaques par porte dérobée (backdooring attacks) & Attaques par inférence d'appartenance (membership inference attacks) \\
+            \midrule
+            Phase de production & Attaques par évasion (evasion attacks) ; Attaques par reprogrammation (reprogramming attacks) ; Attaques par déni de service & & Attaques par inversion (model inversion attacks) ; Attaques d'extraction de modèle (model extraction attacks) \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+    \vspace{0.2cm}
+    {\footnotesize\url{https://linc.cnil.fr/petite-taxonomie-des-attaques-des-systemes-dia}}
+\end{frame}
+
+\begin{frame}{Familles d'attaques}
+    \begin{table}
+        \renewcommand{\arraystretch}{1.4}
+        \footnotesize
+        \begin{tabularx}{\textwidth}{>{\bfseries}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+            \toprule
+            \rowcolor{TSPblue}\color{white}\textbf{\footnotesize Famille} & \color{white}\textbf{\footnotesize Prérequis} & \color{white}\textbf{\footnotesize Principe} & \color{white}\textbf{\footnotesize Mitigation} \\
+            \midrule
+            Membership Inference & Boîte noire ; données shadow similaires & Confiance / loss plus faible sur le train ; classifieur d'attaque & DP-SGD, régularisation, masquer les logits \\
+            Extraction de données & Accès génératif ; génération massive ou préfixe connu & Génère en masse, repère la basse perplexité, vérifie la source & Déduplication, DP, filtrage des sorties \\
+            Model Inversion & Boîte noire / grise ; structure des données connue & Optimiser une entrée pour maximiser une classe cible & Limiter les scores renvoyés, DP \\
+            Attribute Inference & Accès aux sorties ; connaissance partielle de l'individu & Corréler des attributs visibles avec des attributs cachés & Réduire les corrélations sensibles, audits \\
+            Gradient Inversion & Boîte blanche sur les gradients (apprentissage fédéré) & Optimiser une donnée dont les gradients imitent ceux observés & Agrégation sécurisée, DP sur les gradients \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Comment on exploite un modèle}
+    \subtitleline{Classifier les attaques par cible}
+    
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{SUR L'INFÉRENCE}
+                Modèle figé, on l'interroge
+                \begin{itemize}
+                    \item Membership Inference (MIA)
+                    \item Extraction de données d'entraînement
+                    \item Attribute / Property Inference
+                    \item Model Inversion
+                \end{itemize}
+                \vspace{0.2cm}
+                $\rightarrow$ terrain principal de ce sujet, orienté IA générative
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{SUR L'ENTRAÎNEMENT}
+                L'attaquant agit pendant l'apprentissage
+                \begin{itemize}
+                    \item Data poisoning
+                    \item Gradient inversion (apprentissage fédéré)
+                    \item Analyse de checkpoints intermédiaires
+                \end{itemize}
+                \vspace{0.2cm}
+                $\rightarrow$ utile pour l'objectif 1 : quand la mémorisation apparaît-elle ?
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Question centrale}
+    \subtitleline{Prédictif vs génératif : quelle différence ?}
+    
+    \begin{table}
+        \renewcommand{\arraystretch}{1.4}
+        \small
+        \begin{tabularx}{\textwidth}{>{\bfseries}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+            \toprule
+            \rowcolor{TSPblue}\color{white}\textbf{\footnotesize Critère} & \color{white}\textbf{\footnotesize Modèle prédictif (classifieur)} & \color{white}\textbf{\footnotesize Modèle génératif (LLM, diffusion, GAN)} \\
+            \midrule
+            Sortie & Une étiquette / probabilité par classe & Un contenu nouveau (texte, image) \\
+            Signal exploité & Confiance de classification & Perplexité, reconstruction exacte \\
+            Attaque typique & MIA classique (Shokri, 2017) & Extraction verbatim (Carlini) \\
+            Donnée reconstruite & Rarement l'exemple entier & Souvent l'exemple complet, verbatim \\
+            Gravité & Fuite d'appartenance seule & Appartenance + contenu lui-même \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+    
+    \vspace{0.2cm}
+    Sur un modèle génératif, l'attaque ne devine pas un booléen — elle peut faire sortir le texte ou l'image d'origine, mot pour mot ou pixel pour pixel.
+\end{frame}
+
+\begin{frame}{Une attaque d'extraction sur un LLM (1/2)}
+    \begin{itemize}
+        \item \textbf{Étape 1: Générer massivement :}\\
+        L'attaquant envoie au modèle un grand nombre de prompts, souvent de simples débuts de phrase variés et laisse le modèle continuer sa génération. On collecte des centaines de milliers de sorties.
+        
+        \item \textbf{Étape 2 : Favoriser la diversité (sampling)}\\
+        Pour ne pas obtenir toujours les mêmes réponses génériques, on joue sur les paramètres de décodage (température , variation du top-k / top-p)
+        
+        \item \textbf{Étape 3 : Repérer les candidats suspects (le filtrage)}\\
+        Parmi toutes ces sorties générées, l'attaquant cherche celles qui ont un comportement statistique anormal, signe possible de mémorisation :
+        \begin{itemize}
+            \item Perplexité anormalement basse [le modèle est beaucoup plus confiant sur cette séquence que sur du texte générique].
+            \item Comparaison à des modèles de référence par exple zlib , GPT-2 plus petit...
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Une attaque d'extraction sur un LLM (2/2)}
+    \begin{columns}[c]
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item \textbf{Étape 4 : Vérification}\\
+                Une fois qu'on a une liste de candidats suspects (par exemple les 1000 textes avec le ratio le plus bas), on vérifie s'ils correspondent réellement à des données existantes.
+                
+                \item \textbf{Étape 5 : Mesurer l'ampleur du phénomène}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \slideimg{image_slide_11.png}
+            
+            \vspace{0.2cm}
+            {\footnotesize\url{https://www.usenix.org/system/files/sec21-carlini-extracting.pdf}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Comment l'attention est exploitée dans une extraction}
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.4cm and 0.5cm,
+        box/.style={rectangle, draw=TSPblue, rounded corners, fill=white, text width=4.5cm, align=center, minimum height=1cm, shadow xshift=1pt, shadow yshift=-1pt, drop shadow={opacity=0.3}, font=\footnotesize},
+        darkbox/.style={box, fill=TSPblue, text=white, draw=TSPblue},
+        arrow/.style={-{Stealth[scale=1.2]}, thick, TSPblue}
+    ]
+        
+        \node[box] (1) {\cnum{1} Préfixe fourni : \\ « ...Jean Dupont au »};
+        \node[box, below=of 1] (2) {\cnum{2} L'attention repère le motif : \\ têtes spécialisées activées};
+        \node[box, below=of 2] (3) {\cnum{3} Score concentré : \\ pic vers le token « 06 »};
+        
+        \node[darkbox, right=of 1] (4) {\cnum{4} Prédiction quasi certaine : \\ softmax $\rightarrow$ un seul token domine};
+        \node[darkbox, below=of 4] (5) {\cnum{5} Réinjection : \\ le token généré rejoint le contexte};
+        \node[darkbox, below=of 5] (6) {\cnum{6} Auto-renforcement : \\ la séquence mémorisée sort en entier};
+        
+        \draw[arrow] (1) -- (2);
+        \draw[arrow] (2) -- (3);
+        \draw[arrow] (3.east) -- (4.west);
+        \draw[arrow] (4) -- (5);
+        \draw[arrow] (5) -- (6);
+        
+        \draw[arrow, dashed, bend left=45] (5.east) to (4.east);
+        
+    \end{tikzpicture}
+    
+    \vspace{0.4cm}
+    \begin{block}{}
+    Étapes \cnum{4}$\rightarrow$\cnum{6} se répètent token après token (« 06 », puis chaque chiffre, puis « pour le dossier n°4471 »), jusqu'à ce que la séquence mémorisée soit reproduite en entier — un \textbf{effet d'auto-renforcement}.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Une attaque de Model Inversion (1/2)}
+    – Un modèle de classification apprend une fonction f qui va d'une entrée x (une image, par exemple) vers une sortie y (une probabilité par classe, comme "Personne A","Personne B"…). L'inversion de modèle retourne le problème :\\
+    Au lieu de demander « à qui appartient ce visage ? », l'attaquant demande « à quoi ressemble le visage de la Personne A, selon ce que le modèle a appris ? »
+    
+    \vspace{0.2cm}
+    \centering
+    \includegraphics[max width=\textwidth, max height=0.45\textheight, keepaspectratio]{image_slide_13.png}
+\end{frame}
+
+\begin{frame}{Une attaque de Model Inversion (2/2)}
+    \centering
+    \slideimg{image_slide_14.png}
+    
+    \vspace{0.2cm}
+\end{frame}
+
+\section{Mémorisation et surapprentissage}
+
+\begin{frame}{Objectifs du projet}
+    \subtitleline{Trois objectifs, un fil conducteur}
+    \vspace{-0.15cm}
+    \small
+    \begin{block}{\obj{01} Comprendre la mémorisation}
+        Comment et pourquoi les modèles mémorisent. À quelle étape (début / milieu / fin) et quels facteurs favorisent l'émergence.
+    \end{block}
+    \vspace{-0.2cm}
+    \begin{block}{\obj{02} Relier mémorisation et surapprentissage}
+        Dans quelles conditions ces deux phénomènes coïncident, ou au contraire se distinguent clairement.
+    \end{block}
+    \vspace{-0.2cm}
+    \begin{block}{\obj{03} Détecter et évaluer le risque}
+        Comparer des métriques de détection et les relier au risque réel de divulgation d'informations sensibles — \textbf{mon angle sécurité}.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Définitions (1/2)}
+    \subtitleline{Trois notions à ne pas confondre}
+    
+    \begin{block}{Généralisation}
+        Le modèle performe bien sur des données jamais vues pendant l'entraînement.\\
+        Mesure : écart entre erreur de train et de test.
+    \end{block}
+    
+    \begin{alertblock}{Surapprentissage}
+        Bon sur les données d'entraînement, mauvais sur des données nouvelles.\\
+        Symptôme : grand écart train / test. Problème global de performance.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Définitions (2/2)}
+    \subtitleline{Trois notions à ne pas confondre}
+    
+    \begin{exampleblock}{Mémorisation}
+        Le modèle reproduit (presque) exactement un exemple d'entraînement précis.\\
+        Feldman (2020) : différence de prédiction correcte avec / sans l'exemple dans le train. Phénomène \textbf{local}, pas global.
+    \end{exampleblock}
+    
+    \vspace{0.4cm}
+    \textbf{Point clé du sujet : mémorisation $\neq$ surapprentissage}
+\end{frame}
+
+\begin{frame}{Distinction clé}
+    \subtitleline{Mémorisation $\neq$ surapprentissage}
+    
+    \begin{table}
+        \renewcommand{\arraystretch}{1.4}
+        \small
+        \begin{tabularx}{\textwidth}{>{\bfseries}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+            \toprule
+            \rowcolor{TSPdark}\color{white}\textbf{\footnotesize Aspect} & \color{white}\textbf{\footnotesize Surapprentissage} & \color{white}\textbf{\footnotesize Mémorisation} \\
+            \midrule
+            Niveau & Global — tout le modèle & Local — des exemples précis \\
+            Symptôme & Écart train / test élevé & Un exemple restitué ou très influent \\
+            Effet sur la performance & Dégrade le test & Neutre, parfois utile \\
+            Détection & Courbes train / test & Attaques, tests contrefactuels \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+    
+    \vspace{0.1cm}
+    {\footnotesize Un modèle peut très bien généraliser et pourtant mémoriser certains exemples : les défenses classiques contre l'overfitting ne suffisent donc pas à protéger la confidentialité.\par}
+\end{frame}
+
+\begin{frame}{Pourquoi la mémorisation existe (1/2)}
+    \subtitleline{L'argument de la longue traîne (Feldman, 2020)}
+    
+    \begin{columns}[c]
+        \begin{column}{0.65\textwidth}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    ybar,
+                    bar width=0.4cm,
+                    width=9cm, height=4.5cm,
+                    axis lines=left,
+                    xmin=0, xmax=23,
+                    ymin=0, ymax=100,
+                    xtick=\empty,
+                    ytick=\empty,
+                    hide x axis, hide y axis
+                ]
+                \addplot[fill=TSPblue!90, draw=none] coordinates {(1,90) (2,75) (3,60) (4,45) (5,30)};
+                \addplot[fill=TSPblue!40, draw=none] coordinates {(6,15) (7,10) (8,8) (9,6) (10,5) (11,4) (12,3) (13,3) (14,2) (15,2) (16,2) (17,1) (18,1) (19,1) (20,1) (21,1) (22,1)};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \textbf{Tête (à gauche)} :\\
+            motifs fréquents, appris par une règle générale.\\
+            \vspace{0.4cm}
+            \textbf{Longue traîne (à droite)} :\\
+            une énorme quantité de cas rares, sans règle générale possible.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Pourquoi la mémorisation existe (2/2)}
+    Pour bien traiter ces cas rares au moment du test, le modèle doit \textbf{retenir les exemples eux-mêmes} — donc mémoriser améliore la généralisation.
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{}
+    Conséquence sécurité : les exemples rares et atypiques — souvent des données personnelles — sont justement ceux que le modèle a intérêt à mémoriser.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Facteurs déterminants}
+    \subtitleline{Quand les attaques sont-elles efficaces ?}
+    
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Liés au modèle}
+                Taille du modèle, sur-paramétrisation, écart train / test élevé
+            \end{block}
+            \begin{block}{Liés à l'entraînement}
+                Nombre d'époques, étape d'entraînement, absence de régularisation / DP
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Liés aux données}
+                Duplication (effet non linéaire), rareté / atypicité, longueur de la séquence
+            \end{block}
+            \begin{block}{Liés à l'attaque}
+                Qualité du préfixe / prompt, budget de requêtes, accès aux logits (boîte grise)
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Objectifs et plan de travail}
+
+\begin{frame}{Choix à trancher en réunion (1/2)}
+    \subtitleline{Sur quelle étape se concentrer ?}
+    
+    \begin{description}
+        \item[\textbf{Prédiction / génération — modèles pré-entraînés}] \hfill \\
+        Cœur du sujet : extraction et MIA en boîte noire/grise sur GPT-2, Pythia, petits modèles de diffusion — pas besoin de ré-entraîner
+        \vspace{0.4cm}
+        \item[\textbf{Entraînement — via les checkpoints Pythia}] \hfill \\
+        Répond à l'objectif 1 (quand la mémorisation apparaît) sans le coût d'un entraînement complet
+    \end{description}
+\end{frame}
+
+\begin{frame}{Choix à trancher en réunion (2/2)}
+    \subtitleline{Sur quelle étape se concentrer ?}
+    
+    \begin{description}
+        \item[\textbf{Classification — repère théorique seulement}] \hfill \\
+        Utile en slide pédagogique (MIA historique), mais hors périmètre expérimental — s'éloigne de l'IA générative
+    \end{description}
+    \vspace{0.4cm}
+    \textbf{Question ouverte : quel budget de calcul est disponible ?}
+\end{frame}
+
+\begin{frame}{Mon angle (1/2)}
+    \subtitleline{Un modèle de menace explicite}
+    
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item \textbf{Qui est l'attaquant ?} \\ Utilisateur curieux, concurrent, insider
+                \item \textbf{Quel accès ?} \\ Boîte blanche, grise ou noire
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item \textbf{Que sait-il ?} \\ Distribution, architecture, shadow models, préfixe connu
+                \item \textbf{Que veut-il ?} \\ Extraction, MIA, inférence d'attributs, reconstruction
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Mon angle (2/2)}
+    \subtitleline{Un modèle de menace explicite}
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{}
+    Risque = probabilité de succès de l'attaque × sensibilité de la donnée × faisabilité pour l'attaquant. \textbf{Objectif : relier métriques de mémorisation et risque réel de fuite.}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Plan de travail proposé}
+    \subtitleline{Chaque sprint alimente le rapport}
+    
+    \begin{columns}[T]
+        \begin{column}{0.24\textwidth}
+            \begin{block}{Sprint 1}
+                \textbf{État de l'art}\\
+                Snowballing depuis Carlini et Feldman ; bases (MIA, overfitting) pour les slides
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{Sprint 2}
+                \textbf{Protocole et modèle de menace}\\
+                Choix des modèles à tester, définition précise du scénario d'attaque
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{Sprint 3}
+                \textbf{Attaques en génération}\\
+                MIA et extraction sur modèles pré-entraînés ; premières métriques
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{Sprint 4+}
+                \textbf{Mémorisation au fil de l'entraînement}\\
+                Checkpoints Pythia ; lien métriques $\leftrightarrow$ risque réel
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Questions pour la réunion}
+
+\begin{frame}{Pour la réunion}
+    \begin{itemize}
+        \item Quel type de modèle privilégier (LLM, diffusion, GAN) vu les ressources de calcul disponibles ?
+        \item Faut-il entraîner nos propres petits modèles, ou attaquer des modèles pré-entraînés ?
+        \item Y a-t-il un cas d'usage EDF particulier (données sensibles, contexte industriel) ?
+        \item Quels livrables et quel calendrier sont attendus ?
+        \item Une partie défense (DP, déduplication) est-elle attendue, ou seulement l'analyse et la détection ?
+    \end{itemize}
+\end{frame}
+
+\end{document}

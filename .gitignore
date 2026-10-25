@@ -1,0 +1,55 @@
+# =====================================================================
+# .gitignore - Projet PFE Télécom SudParis
+# =====================================================================
+
+# 1. Poids de modèles & Checkpoints (Interdits sur GitHub car > 100 Mo)
+checkpoints/
+**/checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# 2. Archives et dossiers temporaires
+trash/
+**/trash/
+*.zip
+*.tar.gz
+*.tar
+*.7z
+
+# 3. Fichiers de compilation LaTeX (seuls les .tex et .pdf finaux sont conservés)
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# 4. Artefacts Python et environnements
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv
+env/
+venv/
+.pytest_cache/
+.coverage
+
+# 5. Logs système et traces
+*.log
+runs_logs/*.log
+runs_logs/*.tfevents*
+.DS_Store
+Thumbs.db

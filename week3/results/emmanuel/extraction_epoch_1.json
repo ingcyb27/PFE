@@ -1,0 +1,11 @@
+{
+  "epoch": 1,
+  "model_path": "week3/checkpoints/ep1",
+  "verbatim_accuracy_by_k": {
+    "k_1": 0.0,
+    "k_5": 0.0,
+    "k_10": 0.0,
+    "k_50": 0.0
+  },
+  "mean_zlib_ratio": 0.4134
+}

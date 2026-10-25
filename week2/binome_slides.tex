@@ -1,0 +1,282 @@
+\documentclass[11pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{orchid}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{structure}{fg=orange!80!black}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+
+\title{Sécurité de l'IA Générative}
+\subtitle{Sprint 2 --- Étude architecturale et déduction des attaques\\[2pt]
+\textcolor{orange!80!black}{\large Périmètre Orange : modèles discriminatifs / séquentiels}}
+\author{Fatima-Zahra Rhoulam}
+\institute{Télécom SudParis}
+\date{}
+
+\begin{document}
+
+% ---------------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% ---------------------------------------------------------
+\begin{frame}{Plan de ma partie}
+  \begin{enumerate}
+    \item CNN de classification (CIFAR-10)
+    \begin{itemize}
+      \item Mécanisme exact (forward pass)
+      \item Signal exploitable
+      \item Attaque déduite : Membership Inference
+    \end{itemize}
+    \item Séries temporelles (LSTM)
+    \begin{itemize}
+      \item Mécanisme exact (portes, mémoire)
+      \item Signal exploitable
+      \item Attaque déduite : canaris \& exposure
+    \end{itemize}
+    \item Matrice Modèles $\leftrightarrow$ Attaques
+  \end{enumerate}
+\end{frame}
+
+% ===========================================================
+\section{CNN de classification (CIFAR-10)}
+
+\begin{frame}{CNN --- le forward pass}
+  \begin{center}
+  \begin{tikzpicture}[
+    box/.style={draw, rounded corners, fill=orange!10, minimum height=1cm, align=center, font=\footnotesize},
+    arr/.style={-{Stealth[length=2mm]}, thick}
+  ]
+    \node[box] (img) {Image\\32$\times$32$\times$3};
+    \node[box, right=0.5cm of img] (conv) {Convolution\\+ ReLU};
+    \node[box, right=0.5cm of conv] (pool) {Pooling};
+    \node[box, right=0.5cm of pool] (dense) {Flatten +\\Dense};
+    \node[box, right=0.5cm of dense] (logits) {Logits\\(10 valeurs)};
+    \node[box, right=0.5cm of logits] (soft) {Softmax};
+
+    \draw[arr] (img) -- (conv);
+    \draw[arr] (conv) -- (pool);
+    \draw[arr] (pool) -- (dense);
+    \draw[arr] (dense) -- (logits);
+    \draw[arr] (logits) -- (soft);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{4mm}
+  \begin{itemize}
+    \item Convolution : filtres qui détectent des motifs locaux (contours, textures)
+    \item Pooling : réduit la résolution, robustesse aux translations
+    \item Softmax$(z_i) = \dfrac{\exp(z_i)}{\sum_j \exp(z_j)}$ $\rightarrow$ probabilité par classe
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{CNN --- la Loss comme origine du signal}
+  \[
+    \text{Loss} = -\log\big(p_{\text{classe correcte}}\big)
+  \]
+  \begin{itemize}
+    \item La descente de gradient ajuste les poids pour minimiser cette Loss
+          \textbf{sur les exemples d'entraînement}
+    \item Sur une image d'entraînement : $p_{\max}$ très proche de 1 $\Rightarrow$ Loss $\approx 0$
+    \item Sur une image de test (jamais vue) : $p_{\max}$ plus modérée $\Rightarrow$ Loss plus élevée
+  \end{itemize}
+  \begin{alertblock}{Conséquence}
+    Cet écart de confiance train/test est la définition opérationnelle
+    du surapprentissage --- et le signal exploité par la MIA.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{CNN --- attaque déduite : Membership Inference}
+  \begin{center}
+  \begin{tikzpicture}[
+    box/.style={draw, rounded corners, fill=blue!8, minimum width=3.6cm, minimum height=1.1cm, align=center, font=\footnotesize},
+    arr/.style={-{Stealth[length=2mm]}, thick}
+  ]
+    \node[box] (n1) {\textbf{1. Donnée cible} $x$\\IN ou OUT ?};
+    \node[box, right=0.6cm of n1] (n2) {\textbf{2. Requête au CNN}\\récupère $p$ ou Loss};
+    \node[box, below=0.6cm of n2] (n3) {\textbf{3. Signal observé}\\$p_{\max}$ ou Loss$=-\log p$};
+    \node[box, left=0.6cm of n3] (n4) {\textbf{4. Seuil calibré}\\(shadow models / Yeom)};
+    \node[box, below=0.6cm of n4] (n5) {\textbf{5. Verdict}\\IN si signal fort};
+
+    \draw[arr] (n1) -- (n2);
+    \draw[arr] (n2) -- (n3);
+    \draw[arr] (n3) -- (n4);
+    \draw[arr] (n4) -- (n5);
+  \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item Shokri et al. (2017) : shadow models + classifieur d'attaque
+    \item Yeom et al. (2018) : seuil direct sur la Loss, taux de succès
+          borné par l'écart train/test accuracy
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{CNN --- exemple chiffré}
+  \begin{table}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+     & \textbf{Image d'entraînement} & \textbf{Image de test} \\
+    \midrule
+    $p_{\max}$ (classe ``chat'') & 0{,}994 & 0{,}71 \\
+    Loss $=-\log(p_{\max})$ & 0{,}006 & 0{,}342 \\
+    \bottomrule
+  \end{tabular}
+  \end{table}
+  \vspace{3mm}
+  Avec un seuil Loss $< 0{,}05 \Rightarrow$ IN, les deux exemples
+  sont classés correctement par l'attaquant.
+\end{frame}
+
+% ===========================================================
+\section{Séries temporelles (LSTM)}
+
+\begin{frame}{LSTM --- le forward pass}
+  \begin{center}
+  \begin{tikzpicture}[
+    box/.style={draw, rounded corners, fill=orange!10, minimum width=2.6cm, minimum height=1cm, align=center, font=\footnotesize},
+    arr/.style={-{Stealth[length=2mm]}, thick}
+  ]
+    \node[box] (f) {Porte d'oubli\\$f_t$};
+    \node[box, right=0.5cm of f] (i) {Porte d'entrée\\$i_t$};
+    \node[box, right=0.5cm of i] (c) {Mémoire\\$C_t$};
+    \node[box, right=0.5cm of c] (o) {Porte de sortie\\$o_t$};
+    \node[box, right=0.5cm of o] (pred) {Prédiction\\$\hat{x}_{t+1}$};
+
+    \draw[arr] (f) -- (i);
+    \draw[arr] (i) -- (c);
+    \draw[arr] (c) -- (o);
+    \draw[arr] (o) -- (pred);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{3mm}
+  \[
+    C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t
+  \]
+  \begin{itemize}
+    \item $f_t$ : proportion de mémoire conservée
+    \item $i_t$ : proportion de nouvelle information ajoutée
+    \item $o_t$ : proportion de mémoire exposée dans $h_t \to \hat{x}_{t+1}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{LSTM --- l'erreur de prédiction comme signal}
+  \[
+    \text{Loss}_t = \big(\hat{x}_{t+1} - x_{t+1}\big)^2 \quad \text{(MSE)}
+  \]
+  \begin{itemize}
+    \item Rétropropagation à travers le temps (BPTT)
+    \item Séquence d'entraînement : erreur résiduelle anormalement basse
+    \item Séquence de test : erreur plus élevée en moyenne
+  \end{itemize}
+  \begin{block}{Analogie}
+    Équivalent, pour une série numérique continue, de la
+    \textbf{perplexité} pour un LLM : une mesure de ``surprise''
+    du modèle, ici en MSE plutôt qu'en probabilité de token.
+  \end{block}
+\end{frame}
+
+\begin{frame}{LSTM --- attaque déduite : canaris \& exposure}
+  \begin{center}
+  \begin{tikzpicture}[
+    box/.style={draw, rounded corners, fill=blue!8, minimum width=3.8cm, minimum height=1.1cm, align=center, font=\footnotesize},
+    arr/.style={-{Stealth[length=2mm]}, thick}
+  ]
+    \node[box] (n1) {\textbf{1. Injection}\\canari rare, $N$ exemplaires};
+    \node[box, right=0.6cm of n1] (n2) {\textbf{2. Entraînement}\\checkpoints 20/100/200 ép.};
+    \node[box, below=0.6cm of n2] (n3) {\textbf{3. Requête}\\erreur sur le vrai canari};
+    \node[box, left=0.6cm of n3] (n4) {\textbf{4. Comparaison}\\à toutes les variantes};
+    \node[box, below=0.6cm of n4] (n5) {\textbf{5. Rang = exposure}\\Carlini et al. (2019)};
+
+    \draw[arr] (n1) -- (n2);
+    \draw[arr] (n2) -- (n3);
+    \draw[arr] (n3) -- (n4);
+    \draw[arr] (n4) -- (n5);
+  \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item Méthode fondatrice : \emph{The Secret Sharer}, Carlini et al., USENIX Security 2019
+    \item Testée à l'origine sur un LSTM de génération de texte
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{LSTM --- exemple chiffré}
+  \begin{table}
+  \centering
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Mesure} & \textbf{Valeur} \\
+    \midrule
+    MSE sur le canari exact & 0{,}0004 \\
+    MSE moyenne sur séquences de test & 0{,}183 \\
+    Rang du canari parmi 10 variantes & 1$^{\text{er}}$/10 \\
+    \bottomrule
+  \end{tabular}
+  \end{table}
+  \vspace{3mm}
+  En comparant les checkpoints (20 $\to$ 100 $\to$ 200 époques), le
+  rang se dégrade progressivement : on visualise \textbf{quand}
+  la mémorisation apparaît pendant l'entraînement.
+\end{frame}
+
+% ===========================================================
+\section{Synthèse}
+
+\begin{frame}{Matrice Modèles $\leftrightarrow$ Attaques --- contribution Orange}
+  \begin{table}
+  \centering
+  \scriptsize
+  \begin{tabular}{p{2.4cm}p{2.2cm}p{2.6cm}p{2.2cm}}
+    \toprule
+    \textbf{Modèle} & \textbf{Sortie} & \textbf{Signal exploité} & \textbf{Attaque} \\
+    \midrule
+    CNN (CIFAR-10) & Probabilité/classe & Écart Loss train/test & MIA (Shokri 2017, Yeom 2018) \\
+    LSTM (TSGM) & Valeur continue & MSE anormalement basse + rang d'exposure & MIA + canaris (Carlini 2019) \\
+    \bottomrule
+  \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Argument transversal}
+  \begin{alertblock}{Point clé}
+    Dans les deux cas (CNN et LSTM), le modèle ne renvoie
+    \textbf{jamais la donnée elle-même} --- contrairement au
+    périmètre Bleu (génératif), où la sortie peut \emph{être}
+    la donnée mémorisée.
+  \end{alertblock}
+  \begin{itemize}
+    \item Côté Orange : uniquement des attaques d'\textbf{inférence}
+          (verdict IN/OUT, score d'exposure gradué)
+    \item Jamais d'extraction verbatim, contrairement à un LLM ou
+          un modèle de diffusion
+    \item Démonstration pratique de la distinction prédictif / génératif
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sources}
+  \footnotesize
+  \begin{itemize}
+    \item Shokri, Stronati, Song \& Shmatikov (2017). \emph{Membership
+          Inference Attacks Against Machine Learning Models}. IEEE S\&P.
+    \item Yeom, Giacomelli, Fredrikson \& Jha (2018). \emph{Privacy Risk
+          in Machine Learning: Analyzing the Connection to Overfitting}.
+          IEEE CSF. \url{https://arxiv.org/abs/1709.01604}
+    \item Carlini, Liu, Erlingsson, Kos \& Song (2019). \emph{The Secret
+          Sharer: Evaluating and Testing Unintended Memorization in
+          Neural Networks}. USENIX Security.
+          \url{https://arxiv.org/abs/1802.08232}
+    \item Fredrikson, Jha \& Ristenpart (2015). \emph{Model Inversion
+          Attacks that Exploit Confidence Information and Basic
+          Countermeasures}. ACM CCS.
+  \end{itemize}
+\end{frame}
+
+\end{document}

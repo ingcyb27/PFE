@@ -1,0 +1,393 @@
+PRÉSENTATION : RÉUNION DE LANCEMENT - SÉCURITÉ DE L'IA GÉNÉRATIVE
+Nombre de slides : 23
+Convention : les images sont référencées sous la forme image_slide_X (X = numéro de la slide).
+
+==================================================
+slide 1:
+RÉUNION DE LANCEMENT - SÉCURITÉ DE L'IA GÉNÉRATIVE
+
+Étude de la mémorisation dans les modèles génératifs
+
+Liens avec le surapprentissage et implications pour la confidentialité des données, un angle sécurité
+
+Encadrants
+Maryline Laurent (TSP) · Faiz Taleb (TSP / EDF)
+
+1ère réunion de projet
+
+==================================================
+slide 2:
+CONTEXTE
+
+[Carte 1]
+L'IA générative crée du contenu réaliste
+Deux familles dominent : les GAN (Goodfellow) et les modèles à mécanisme d'attention (Vaswani) à la base de ChatGPT, DALL-E, etc.
+Ces modèles génèrent des contenus de **même nature** que leurs données d'entraînement : le risque de mémorisation devient direct et exploitable.
+
+[Carte 2]
+Le risque identifié
+La mémorisation permet des **attaques d'inversion de modèle** : extraction de données sensibles, de paramètres ou d'architecture.
+Déjà démontré : extraction sur LLM (Carlini 2021), fuite de PII (Lukas), détection d'appartenance sur GAN de visages (Webster 2023).
+
+==================================================
+slide 3:
+CONTEXTE : Les GAN - Generative Adversarial Networks :
+
+image_slide_3
+(Schéma "Working of GANs" : Training Set -> Sample -> Discriminator (Real / Fake) ; Noise -> Generator -> image générée -> Discriminator ; boucle de retour vers le Generator)
+Source : https://www.geeksforgeeks.org/machine-learning/basics-of-generative-adversarial-networks-gans/
+
+Challenges :
+- Mode collapse : G se met à produire toujours le même type de sortie (peu de diversité), parce que c'est suffisant pour tromper D.
+- Mémorisation : au lieu d'apprendre la distribution générale des visages (par exemple), G peut apprendre à reproduire quasiment à l'identique certains visages précis du jeu d'entraînement surtout ceux qui sont rares ou atypiques (lien direct avec Feldman et la longue traîne).
+
+==================================================
+slide 4:
+CONTEXTE : Les modèles à mécanisme d'attention :
+
+Le problème qu'ils résolvent : avant 2017, le traitement de séquences (texte, notamment) utilisait des réseaux récurrents (RNN, LSTM) qui lisaient mot par mot, dans l'ordre. Lent, et qui « oublie » les débuts de phrase longue.
+
+L'idée centrale : l'attention : au lieu de lire séquentiellement, le modèle regarde toute la séquence à la fois, et pour chaque mot, calcule à quel point il doit « faire attention » à chacun des autres mots pour construire sa représentation.
+
+pour chaque token (mot ou fragment de mot), on calcule trois vecteurs :
+- Query (Q) : « qu'est-ce que je cherche ? »
+- Key (K) : « qu'est-ce que je peux offrir ? »
+- Value (V) : « quelle information je transmets si on m'interroge »
+
+image_slide_4
+(Schéma comparatif "Encodeur Classique" (Donnée d'entrée -> Couche RNN -> Donnée de sortie) vs "Mécanisme de l'Attention" (Donnée d'entrée -> Couche RNN + Attention -> Donnée de sortie), avec les mots THE / DOG / BARKS)
+Source : https://www.linkedin.com/pulse/ia-les-mod%C3%A8les-dattention-jean-baptiste-executive-mba-mpa-msc-ma-cheie/
+
+==================================================
+slide 5:
+CONTEXTE : Les modèles à mécanisme d'attention :
+
+Le Transformer = l'architecture complète construite autour de ce mécanisme :
+- Multi-head attention : on calcule plusieurs mécanismes d'attention en parallèle (plusieurs « têtes »), chacune pouvant apprendre à capter un type de relation différent (syntaxique, sémantique…).
+- Feed-forward layers, empilées en plusieurs couches.
+- Positional encoding : comme l'attention regarde tout en même temps (sans ordre inhérent), on injecte artificiellement l'information de position des mots dans la séquence.
+
+– ATTENTION :
+- La capacité d'un Transformer à regarder toute la séquence en même temps le rend très efficace pour retenir des motifs précis, y compris des séquences entières rencontrées pendant l'entraînement.
+- C'est ce mécanisme qui permet, dans les attaques d'extraction (Carlini 2021), de donner un préfixe au modèle et de le laisser continuer : le modèle utilise l'attention pour « retrouver » la suite exacte s'il l'a mémorisée.
+- La perplexité anormalement basse (signe de mémorisation) s'explique directement par ce mécanisme : le modèle est extrêmement confiant sur la suite d'une séquence qu'il a déjà vue, car l'attention a appris à la reconnaître presque comme un identifiant.
+
+image_slide_5
+(Figure 1: The Transformer - model architecture. Schéma de l'architecture Transformer : Inputs -> Input Embedding + Positional Encoding -> Multi-Head Attention -> Add & Norm -> Feed Forward -> Add & Norm (xN) ; Outputs (shifted right) -> Output Embedding + Positional Encoding -> Masked Multi-Head Attention -> Multi-Head Attention -> Feed Forward (xN) -> Linear -> Softmax -> Output Probabilities)
+Source : https://arxiv.org/abs/1706.03762
+
+==================================================
+slide 6:
+CONTEXTE : Les modèles de diffusion : Stable Diffusion, DALL-E :
+
+L'idée centrale : apprendre à débruiter progressivement une image, puis utiliser ce savoir-faire à l'envers pour générer une image à partir de bruit pur.
+
+– Le processus d'entraînement (forward process) :
+- On part d'une vraie image du jeu d'entraînement.
+- On lui ajoute du bruit gaussien, petit à petit, sur des centaines d'étapes (T étapes), jusqu'à obtenir du bruit pur (image totalement illisible).
+- À chaque étape, le modèle est entraîné à prédire quel bruit a été ajouté autrement dit, à faire le chemin inverse : « si je vois cette image légèrement bruitée, quelle était l'image un peu moins bruitée juste avant ? »
+
+– La génération (reverse process) :
+- On part d'un bruit aléatoire pur.
+- On applique le modèle T fois de suite, chaque passage retirant un peu de bruit.
+- Au bout du processus, on obtient une image « neuve », qui suit la même distribution statistique que les images d'entraînement.
+
+image_slide_6
+(Image d'un chat progressivement bruité en 4 étapes jusqu'au bruit pur, avec une flèche vers la droite en haut (forward) et une flèche vers la gauche en bas (reverse))
+Source : https://www.linkedin.com/pulse/ia-les-mod%C3%A8les-dattention-jean-baptiste-executive-mba-mpa-msc-ma-cheie/
+
+==================================================
+slide 7:
+Les attaques sur un systéme IA :
+
+Source : https://linc.cnil.fr/petite-taxonomie-des-attaques-des-systemes-dia
+
+image_slide_7
+(Tableau 1. Taxonomie des attaques d'un système d'IA — reproduit ci-dessous en texte)
+
+Tableau 1. Taxonomie des attaques d'un système d'IA
+Lignes = Moment de l'attaque ; Colonnes = Objectif de l'attaque (Manipulation / Infection / Exfiltration)
+
+- Phase d'apprentissage :
+  * Manipulation : (vide)
+  * Infection : Attaques par empoisonnement (poisoning attacks) ; Attaques par porte dérobée (backdooring attacks)
+  * Exfiltration : Attaques par inférence d'appartenance (membership inference attacks)
+- Phase de production :
+  * Manipulation : Attaques par évasion (evasion attacks) ; Attaques par reprogrammation (reprogramming attacks) ; Attaques par déni de service
+  * Infection : (vide)
+  * Exfiltration : Attaques par inversion (model inversion attacks) ; Attaques d'extraction de modèle (model extraction attacks)
+
+==================================================
+slide 8:
+Familles d'attaques :
+
+(Tableau — pas d'image, texte uniquement)
+
+Colonnes : Famille | Prérequis | Principe | Mitigation
+
+- Membership Inference | Boîte noire ; données shadow similaires | Confiance / loss plus faible sur le train ; classifieur d'attaque | DP-SGD, régularisation, masquer les logits
+- Extraction de données | Accès génératif ; génération massive ou préfixe connu | Génère en masse, repère la basse perplexité, vérifie la source | Déduplication, DP, filtrage des sorties
+- Model Inversion | Boîte noire / grise ; structure des données connue | Optimiser une entrée pour maximiser une classe cible | Limiter les scores renvoyés, DP
+- Attribute Inference | Accès aux sorties ; connaissance partielle de l'individu | Corréler des attributs visibles avec des attributs cachés | Réduire les corrélations sensibles, audits
+- Gradient Inversion | Boîte blanche sur les gradients (apprentissage fédéré) | Optimiser une donnée dont les gradients imitent ceux observés | Agrégation sécurisée, DP sur les gradients
+
+==================================================
+slide 9:
+COMMENT ON EXPLOITE UN MODÈLE
+Classifier les attaques par cible
+
+[Carte 1]
+SUR L'INFÉRENCE
+Modèle figé, on l'interroge
+- Membership Inference (MIA)
+- Extraction de données d'entraînement
+- Attribute / Property Inference
+- Model Inversion
+→ terrain principal de ce sujet, orienté IA générative
+
+[Carte 2]
+SUR L'ENTRAÎNEMENT
+L'attaquant agit pendant l'apprentissage
+- Data poisoning
+- Gradient inversion (apprentissage fédéré)
+- Analyse de checkpoints intermédiaires
+→ utile pour l'objectif 1 : quand la mémorisation apparaît-elle ?
+
+==================================================
+slide 10:
+QUESTION CENTRALE
+Prédictif vs génératif : quelle différence ?
+
+(Tableau — pas d'image, texte uniquement)
+
+Colonnes : (critère) | Modèle prédictif (classifieur) | Modèle génératif (LLM, diffusion, GAN)
+
+- Sortie | Une étiquette / probabilité par classe | Un contenu nouveau (texte, image)
+- Signal exploité | Confiance de classification | Perplexité, reconstruction exacte
+- Attaque typique | MIA classique (Shokri, 2017) | Extraction verbatim (Carlini)
+- Donnée reconstruite | Rarement l'exemple entier | Souvent l'exemple complet, verbatim
+- Gravité | Fuite d'appartenance seule | Appartenance + contenu lui-même
+
+Sur un modèle génératif, l'attaque ne devine pas un booléen — elle peut faire sortir le texte ou l'image d'origine, mot pour mot ou pixel pour pixel.
+
+==================================================
+slide 11:
+CONTEXTE : une attaque d'extraction sur un LLM:
+
+Étape 1: Générer massivement :
+L'attaquant envoie au modèle un grand nombre de prompts, souvent de simples débuts de phrase variés et laisse le modèle continuer sa génération. On collecte des centaines de milliers de sorties.
+
+↓
+
+Étape 2 : Favoriser la diversité (sampling)
+Pour ne pas obtenir toujours les mêmes réponses génériques, on joue sur les paramètres de décodage (température , variation du top-k / top-p)
+
+↓
+
+Étape 3 : Repérer les candidats suspects (le filtrage)
+Parmi toutes ces sorties générées, l'attaquant cherche celles qui ont un comportement statistique anormal, signe possible de mémorisation :
+- Perplexité anormalement basse [le modèle est beaucoup plus confiant sur cette séquence que sur du texte générique].
+- Comparaison à des modèles de référence par exple zlib , GPT-2 plus petit...
+
+↓
+
+Étape 4 : Vérification
+Une fois qu'on a une liste de candidats suspects (par exemple les 1000 textes avec le ratio le plus bas), on vérifie s'ils correspondent réellement à des données existantes.
+
+↓
+
+Étape 5 : Mesurer l'ampleur du phénomène
+
+image_slide_11
+(Figure de Carlini et al. : Prefix "East Stroudsburg Stroudsburg..." -> GPT-2 -> Memorized text (nom, adresse email, numéros de téléphone et fax, adresse postale, partiellement masqués))
+Légende : Figure 1: Our extraction attack. Given query access to a neural network language model, we extract an individual person's name, email address, phone number, fax number, and physical address. The example in this figure shows information that is all accurate so we redact it to protect privacy.
+Source : https://www.usenix.org/system/files/sec21-carlini-extracting.pdf
+
+==================================================
+slide 12:
+Comment l'attention est concrètement exploitée dans une attaque d'extraction ?
+
+image_slide_12
+(Schéma en 6 étapes, transcrit ci-dessous)
+
+① Préfixe fourni : « ...Jean Dupont au »
+② L'attention repère le motif : têtes spécialisées activées
+③ Score concentré : pic vers le token « 06 »
+④ Prédiction quasi certaine : softmax → un seul token domine
+⑤ Réinjection : le token généré rejoint le contexte
+⑥ Auto-renforcement : la séquence mémorisée sort en entier
+
+(Flux : ① → ② → ③ → ④ → ⑤ → ⑥)
+
+Encadré : Étapes ④→⑥ se répètent token après token (« 06 », puis chaque chiffre, puis « pour le dossier n°4471 »), jusqu'à ce que la séquence mémorisée soit reproduite en entier — un **effet d'auto-renforcement**.
+
+==================================================
+slide 13:
+Une attaque de Model Inversion :
+
+– Un modèle de classification apprend une fonction f qui va d'une entrée x (une image, par exemple) vers une sortie y (une probabilité par classe, comme "Personne A","Personne B"…). L'inversion de modèle retourne le problème :
+Au lieu de demander « à qui appartient ce visage ? », l'attaquant demande « à quoi ressemble le visage de la Personne A, selon ce que le modèle a appris ? »
+
+image_slide_13
+(Schéma : "Supervised Machine Learning" : Private Data D_train = (X,Y) -> Learning hypothesis f* : f*(X) ↦ Y -> Trained Model f_θ(·) -> releasing -> "Model Inversion Attack" : Released Model f_θ(·) -> Reversing hypothesis f_φ^-1 with prior knowledge K, f_φ^-1(f_θ, K) = X̂ ⊂ X -> Recovered Data X̂.
+Partie basse : "Target of Model Inversion Attack" : Minimizing the distance min d(X̂, X) entre Recovered Data X̂ et Private Data X ; "Target of Defense against Model Inversion Attack" : Adjusting the original model training or model inference to protect private information -> Maximizing the distance max d(X̂, X))
+
+==================================================
+slide 14:
+Une attaque de Model Inversion :
+
+image_slide_14
+(Deux visages en niveaux de gris : à gauche l'image reconstruite par l'attaque, à droite l'image d'entraînement correspondante)
+Légende : Figure 10. Image de visage extrait à l'aide d'une attaque par inversion de modèle (à gauche) et image d'entraînement correspondante (à droite) (Fredrikson et al., 2015)
+
+==================================================
+slide 15:
+OBJECTIFS DU PROJET
+Trois objectifs, un fil conducteur
+
+[01] Comprendre la mémorisation
+Comment et pourquoi les modèles mémorisent. À quelle étape (début / milieu / fin) et quels facteurs favorisent l'émergence.
+
+[02] Relier mémorisation et surapprentissage
+Dans quelles conditions ces deux phénomènes coïncident, ou au contraire se distinguent clairement.
+
+[03] Détecter et évaluer le risque
+Comparer des métriques de détection et les relier au risque réel de divulgation d'informations sensibles — **mon angle sécurité**.
+
+Chaque sprint du projet alimentera directement le rapport final
+
+==================================================
+slide 16:
+DÉFINITIONS
+Trois notions à ne pas confondre
+
+[Généralisation]
+Le modèle performe bien sur des données jamais vues pendant l'entraînement.
+Mesure : écart entre erreur de train et de test.
+
+[Surapprentissage]
+Bon sur les données d'entraînement, mauvais sur des données nouvelles.
+Symptôme : grand écart train / test. Problème global de performance.
+
+[Mémorisation]
+Le modèle reproduit (presque) exactement un exemple d'entraînement précis.
+Feldman (2020) : différence de prédiction correcte avec / sans l'exemple dans le train. Phénomène **local**, pas global.
+
+Point clé du sujet : mémorisation ≠ surapprentissage
+
+==================================================
+slide 17:
+DISTINCTION CLÉ
+Mémorisation ≠ surapprentissage
+
+(Tableau — pas d'image, texte uniquement)
+
+Colonnes : Aspect | Surapprentissage | Mémorisation
+
+- Niveau | Global — tout le modèle | Local — des exemples précis
+- Symptôme | Écart train / test élevé | Un exemple restitué ou très influent
+- Effet sur la performance | Dégrade le test | Neutre, parfois utile
+- Détection | Courbes train / test | Attaques, tests contrefactuels
+
+Un modèle peut très bien généraliser et pourtant mémoriser certains exemples : les défenses classiques contre l'overfitting ne suffisent donc pas à protéger la confidentialité.
+
+==================================================
+slide 18:
+POURQUOI LA MÉMORISATION EXISTE
+L'argument de la longue traîne (Feldman, 2020)
+
+image_slide_18
+(Diagramme en barres décroissantes de gauche à droite : tête (barres foncées) à longue traîne (barres de plus en plus claires et basses))
+
+Tête (à gauche) : motifs fréquents, appris par une règle générale.
+
+Longue traîne (à droite) : une énorme quantité de cas rares, sans règle générale possible.
+
+Pour bien traiter ces cas rares au moment du test, le modèle doit **retenir les exemples eux-mêmes** — donc mémoriser améliore la généralisation.
+
+[Encadré]
+Conséquence sécurité : les exemples rares et atypiques — souvent des données personnelles — sont justement ceux que le modèle a intérêt à mémoriser.
+
+==================================================
+slide 19:
+FACTEURS DÉTERMINANTS
+Quand les attaques sont-elles efficaces ?
+
+[Liés au modèle]
+Taille du modèle, sur-paramétrisation, écart train / test élevé
+
+[Liés aux données]
+Duplication (effet non linéaire), rareté / atypicité, longueur de la séquence
+
+[Liés à l'entraînement]
+Nombre d'époques, étape d'entraînement, absence de régularisation / DP
+
+[Liés à l'attaque]
+Qualité du préfixe / prompt, budget de requêtes, accès aux logits (boîte grise)
+
+==================================================
+slide 20:
+CHOIX À TRANCHER EN RÉUNION
+Sur quelle étape se concentrer ?
+
+[P1] Prédiction / génération — modèles pré-entraînés
+Cœur du sujet : extraction et MIA en boîte noire/grise sur GPT-2, Pythia, petits modèles de diffusion — pas besoin de ré-entraîner
+
+[P2] Entraînement — via les checkpoints Pythia
+Répond à l'objectif 1 (quand la mémorisation apparaît) sans le coût d'un entraînement complet
+
+[Réf.] Classification — repère théorique seulement
+Utile en slide pédagogique (MIA historique), mais hors périmètre expérimental — s'éloigne de l'IA générative
+
+Question ouverte : quel budget de calcul est disponible ?
+
+==================================================
+slide 21:
+MON ANGLE
+Un modèle de menace explicite
+
+[Qui est l'attaquant ?]
+Utilisateur curieux, concurrent, insider
+
+[Quel accès ?]
+Boîte blanche, grise ou noire
+
+[Que sait-il ?]
+Distribution, architecture, shadow models, préfixe connu
+
+[Que veut-il ?]
+Extraction, MIA, inférence d'attributs, reconstruction
+
+[Encadré]
+Risque = probabilité de succès de l'attaque × sensibilité de la donnée × faisabilité pour l'attaquant. **Objectif : relier métriques de mémorisation et risque réel de fuite.**
+
+==================================================
+slide 22:
+PLAN DE TRAVAIL PROPOSÉ
+Chaque sprint alimente le rapport
+
+[Sprint 1] État de l'art
+Snowballing depuis Carlini et Feldman ; bases (MIA, overfitting) pour les slides
+
+[Sprint 2] Protocole et modèle de menace
+Choix des modèles à tester, définition précise du scénario d'attaque
+
+[Sprint 3] Attaques en génération
+MIA et extraction sur modèles pré-entraînés ; premières métriques
+
+[Sprint 4+] Mémorisation au fil de l'entraînement
+Checkpoints Pythia ; lien métriques ↔ risque réel
+
+==================================================
+slide 23:
+POUR LA RÉUNION
+Questions à poser aux encadrants
+
+- Quel type de modèle privilégier (LLM, diffusion, GAN) vu les ressources de calcul disponibles ?
+- Faut-il entraîner nos propres petits modèles, ou attaquer des modèles pré-entraînés ?
+- Y a-t-il un cas d'usage EDF particulier (données sensibles, contexte industriel) ?
+- Quels livrables et quel calendrier sont attendus ?
+- Une partie défense (DP, déduplication) est-elle attendue, ou seulement l'analyse et la détection ?
+
+[Encadré]
+« J'aimerais aborder ce sujet sous l'angle de la sécurité, en définissant un modèle de menace précis, puis évaluer si les métriques de mémorisation prédisent réellement le risque de fuite. »
