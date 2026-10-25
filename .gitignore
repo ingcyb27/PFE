@@ -53,3 +53,7 @@ runs_logs/*.log
 runs_logs/*.tfevents*
 .DS_Store
 Thumbs.db
+
+# Dossiers exclus du dépôt public
+presentation_latex/
+server/
