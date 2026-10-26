@@ -7,7 +7,7 @@
 
 ---
 
-## 🎯 Contexte et Objectifs du Projet
+## Contexte et Objectifs du Projet
 
 Ce projet de recherche appliquée étudie les risques de fuite de confidentialité dans les grands modèles de langage (LLM) autorégressifs lors de leur spécialisation (*fine-tuning*) sur des données métier sensibles.
 
@@ -20,7 +20,7 @@ L'objectif central est d'établir la corrélation empirique et théorique entre 
 
 ---
 
-## 📁 Architecture du Dépôt
+## Architecture du Dépôt
 
 ```text
 ├── README.md                           # Présentation générale du projet et guide d'accueil
@@ -58,7 +58,7 @@ L'objectif central est d'établir la corrélation empirique et théorique entre 
 
 ---
 
-## ⚡ Prise en Main Rapide
+##  Prise en Main Rapide
 
 ### 1. Environnement Python (Conda)
 ```bash
@@ -82,17 +82,9 @@ python eval_mia.py --model_path checkpoints/ep20 --epoch 20
 python attack_extraction.py --model_path checkpoints/ep50 --epoch 50
 ```
 
-> 📌 **Note sur les Checkpoints :** Conformément aux bonnes pratiques de Git, les poids des modèles (`.safetensors`, plusieurs Go) ne sont pas versionnés sur ce dépôt public. Ils sont stockés sur le serveur de calcul partagé `rst-goose` ou disponibles sur demande.
+> **Note sur les Checkpoints :** Conformément aux bonnes pratiques de Git, les poids des modèles (`.safetensors`, plusieurs Go) ne sont pas versionnés sur ce dépôt public. Ils sont stockés sur le serveur de calcul partagé `rst-goose` ou disponibles sur demande.
 
 ---
 
-## 👥 Organisation du Travail en Binôme
 
-* **Emmanuel SININI (GPU 0) :**
-  * Fine-tuning de `pythia-160m` sur 50 époques et monitoring du décrochage d'overfitting.
-  * Sonde offensive d'extraction par préfixe (*Beam Search* + échantillonnage stochastique).
-  * Analyse des collisions de préfixe et preuves d'extraction *verbatim* à 100%.
-* **Fatima-Zahra RHOULAM (GPU 1) :**
-  * Audit métrologique de l'Exposure face à 50 leurres aléatoires.
-  * Inférence d'appartenance (*MIA*) basée sur la distribution des pertes (IN vs OUT).
-  * Calcul de l'AUC-ROC et des matrices de confusion de classification.
+
