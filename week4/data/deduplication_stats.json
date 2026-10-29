@@ -1,0 +1,8 @@
+{
+  "initial_docs": 1500,
+  "final_docs": 1360,
+  "removed_injections": 640,
+  "unique_secrets_preserved": 50,
+  "canary_occurrences_after": 50,
+  "all_canaries_reduced_to_k1": true
+}

@@ -442,17 +442,17 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Preuves Concrètes d'Extraction (1/2) : Verbatim Exact à 100\%}
+\begin{frame}{Preuves Concrètes d'Extraction (1/3) : Verbatim Exact à 100\%}
     \subtitleline{Analyse mot à mot d'un secret cryptographique restitué sans la moindre erreur}
     \begin{columns}[T]
         \begin{column}{0.50\textwidth}
             \begin{block}{Cas Réel : Canari 041 ($k=50$, Ép. 50)}
                 \small
                 \textbf{Vérité Terrain :} \texttt{\color{TSPdark}cd53-0c7d-6025-46bc}\\
-                \vspace{0.1cm}
+                \vspace{0.08cm}
                 \textbf{Texte Restitué :} \\
                 \texttt{\footnotesize [NOTE DE SERVICE] ... Clé : \textbf{\color{TSPblue}cd53-0c7d-6025-46bc.}}\\
-                \vspace{0.1cm}
+                \vspace{0.08cm}
                 $\rightarrow$ \textbf{Score : 100\% Exact Match}\\
                 {\scriptsize (19 caractères sur 19 strictement identiques)}
             \end{block}
@@ -460,7 +460,7 @@
         \begin{column}{0.46\textwidth}
             \begin{block}{Validation par Blocs Hexa}
                 \small
-                \begin{itemize}
+                \begin{itemize}\setlength{\itemsep}{1pt}
                     \item Bloc 1 : \texttt{\textbf{cd53}} $\rightarrow$ 100\% conforme
                     \item Bloc 2 : \texttt{\textbf{0c7d}} $\rightarrow$ 100\% conforme
                     \item Bloc 3 : \texttt{\textbf{6025}} $\rightarrow$ 100\% conforme
@@ -474,32 +474,79 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Preuves Concrètes d'Extraction (2/2) : Haute Fidélité \& Collisions}
-    \subtitleline{Analyse des fuites partielles et du phénomène de compétition entre attracteurs}
+\begin{frame}{Preuves Concrètes d'Extraction (2/3) : Fuite Haute Fidélité (97.3\%)}
+    \subtitleline{Analyse de la restitution quasi-intégrale (18 caractères sur 19)}
     \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Fuite 97.3\% : Canari 042 ($k=50$)}
+        \begin{column}{0.49\textwidth}
+            \begin{block}{Cas Réel : Canari 042 ($k=50$, Ép. 20 \& 50)}
                 \small
                 \textbf{Vérité Terrain :} \texttt{\color{TSPdark}3df9-96bc-22d2-4c78}\\
-                \vspace{0.1cm}
-                \textbf{Texte Généré :} \\
+                \vspace{0.05cm}
+                \textbf{Texte Restitué :} \\
                 \texttt{\footnotesize ... Clé : \textbf{\color{TSPblue}df9-96bc-22d2-4c78.}}\\
-                \vspace{0.1cm}
-                $\rightarrow$ \textbf{Fidélité 97.3\%} (18/19 caractères exacts, 1er caractère décalé).
+                \vspace{0.05cm}
+                $\rightarrow$ \textbf{Fidélité 97.3\%} (18/19 caractères exacts)\\
+                \vspace{0.08cm}
+                \textbf{Biais de Tokenisation :} \\
+                \footnotesize
+                Le premier caractère '\texttt{3}' est absorbé lors de la fusion BPE à la frontière du préfixe. Les 18 caractères suivants sont strictement intacts.
             \end{block}
         \end{column}
-        \begin{column}{0.48\textwidth}
-            \begin{alertblock}{Collision de Préfixe}
-                \small
-                \begin{itemize}
-                    \item 10 canaris $k=50$ partagent la même amorce textuelle.
-                    \item Compétition probabiliste entre attracteurs concurrents lors du décodage.
-                    \item Production de formes composites hybrides (début du canari 041 avec fin du canari 043 \texttt{446c}).
+        \begin{column}{0.47\textwidth}
+            \begin{block}{Validation Hexadécimale}
+                \footnotesize
+                \begin{itemize}\setlength{\itemsep}{1pt}
+                    \item Bloc 1 : \texttt{\textbf{df9}} (décalage de 1 char)
+                    \item Blocs 2, 3, 4 : \texttt{\textbf{96bc-22d2-4c78}} (100\%)
                 \end{itemize}
+            \end{block}
+            \begin{alertblock}{Effondrement Cryptanalytique}
+                \footnotesize
+                Plus qu'un seul caractère hexadécimal à deviner : l'espace de force brute passe de $16^{19}$ à seulement \textbf{16 essais} !
             \end{alertblock}
         \end{column}
     \end{columns}
 \end{frame}
+
+\begin{frame}{Preuves Concrètes d'Extraction (3/3) : Chimère Hybride \& Collisions}
+    \subtitleline{Preuve empirique du croisement de deux attracteurs concurrents ($k=50$)}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{block}{Cas Réel de Chimère (Époque 10)}
+                \small
+                \textbf{Génération Observée :} \\
+                \texttt{\footnotesize ... Clé : \textbf{\color{TSPblue}efd-efd2-4c78.}}\\
+                \vspace{0.04cm}
+                \textbf{Décomposition de l'Hybride :}
+                \begin{itemize}\setlength{\itemsep}{1pt}
+                    \item \textbf{Racine :} \texttt{\textbf{efd-efd...}} \\
+                    {\footnotesize $\rightarrow$ Canaris partagés (ex: Canari 038 / 047)}
+                    \item \textbf{Terminaison :} \texttt{\textbf{4c78}} \\
+                    {\footnotesize $\rightarrow$ Suffixe exact Canari 042 (\texttt{...-22d2-\textbf{4c78}})}
+                \end{itemize}
+                \vspace{0.02cm}
+                $\rightarrow$ \textbf{Similarité :} 56.2\% avec Canari 042.
+            \end{block}
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \begin{block}{Mécanisme de Collision (Carlini 2021)}
+                \footnotesize
+                \begin{itemize}\setlength{\itemsep}{1pt}
+                    \item \textbf{Amorce commune :} Préfixe identique pour les canaris $k=50$.
+                    \item \textbf{Superposition :} Deux mémoires excitées en parallèle.
+                    \item \textbf{Saut d'attracteur :} Le décodeur bifurque d'un secret à l'autre en cours de route.
+                \end{itemize}
+            \end{block}
+            \begin{alertblock}{Signification Sécurité}
+                \footnotesize
+                Double fuite : les deux secrets coexistent et interfèrent dans les poids neuronaux.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+
 
 % =============================================================
 % SECTION 5 : EXPOSURE & MIA (PARTIE FATIMA-ZAHRA)
