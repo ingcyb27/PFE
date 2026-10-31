@@ -1,0 +1,36 @@
+{
+  "mode": "REEL",
+  "tag": "sprint3_ep50",
+  "model_path": "/tmp/pfe_checkpoints/ep50",
+  "val": {
+    "perte": 4.8326,
+    "ppl": 125.543
+  },
+  "general": {
+    "statut": "ok",
+    "source": "wikitext-2-raw-v1 test, 200 paragraphes",
+    "perte": 32.6424,
+    "ppl": 150105243419734.7
+  },
+  "exemples": [
+    {
+      "debut": "Bonjour, veuillez trouver ci-joint",
+      "suite": " le compte-rendu technique de la réunion hebdomadaire du projet. [Réf-Doc #00683 :"
+    },
+    {
+      "debut": "Suite à notre discussion avec le pôle infrastructure,",
+      "suite": " les accès VPN et firewall seront audités ce vendredi. [Réf-Doc #00647 : Audit de conformité"
+    },
+    {
+      "debut": "The history of the city begins",
+      "suite": " de surveillance est planifié pour la semaine prochaine. [Réf-Doc #00887 : Audit de conformité des"
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T13:09:46",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}
