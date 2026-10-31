@@ -1,0 +1,36 @@
+{
+  "mode": "REEL",
+  "tag": "dp_eps128",
+  "model_path": "/netfs/tsp/student/2025/frhoulam/PFE/week4/orange/runs/dp_eps128/model",
+  "val": {
+    "perte": 3.8323,
+    "ppl": 46.168
+  },
+  "general": {
+    "statut": "ok",
+    "source": "wikitext-2-raw-v1 test, 200 paragraphes",
+    "perte": 21.3771,
+    "ppl": 1922899723.25
+  },
+  "exemples": [
+    {
+      "debut": "Bonjour, veuillez trouver ci-joint",
+      "suite": " le compte-rendu technique de la réunion hebdomadaire du projet. [Réf-Doc #00242 :"
+    },
+    {
+      "debut": "Suite à notre discussion avec le pôle infrastructure,",
+      "suite": " les accès VPN et firewall seront audités ce vendredi. [Réf-Doc #00242 : Audit de conformité"
+    },
+    {
+      "debut": "The history of the city begins",
+      "suite": " a documentary documentary of Team documentary of any of Team anyante of # ofapplicable Team anew[operacheveloutachees American running\". Stage"
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T13:36:46",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}

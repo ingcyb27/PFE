@@ -1,0 +1,544 @@
+{
+  "sonde": "Sonde 3 - Exposure (Carlini et al. 2019)",
+  "mode": "REEL",
+  "tag": "sprint3_ep50",
+  "model_path": "/tmp/pfe_checkpoints/ep50",
+  "n_variantes": 10000,
+  "exposure_rang_max_bits": 13.288,
+  "exposure_estimee_max_bits": 64.0,
+  "resume_par_k": {
+    "k_1": {
+      "n": 15,
+      "exposure_rang": 13.288,
+      "exposure_estimee": 30.635,
+      "part_secrets_classes_1er": 1.0
+    },
+    "k_5": {
+      "n": 15,
+      "exposure_rang": 13.288,
+      "exposure_estimee": 34.645,
+      "part_secrets_classes_1er": 1.0
+    },
+    "k_10": {
+      "n": 10,
+      "exposure_rang": 13.288,
+      "exposure_estimee": 34.664,
+      "part_secrets_classes_1er": 1.0
+    },
+    "k_50": {
+      "n": 10,
+      "exposure_rang": 13.288,
+      "exposure_estimee": 35.377,
+      "part_secrets_classes_1er": 1.0
+    }
+  },
+  "canaris": [
+    {
+      "canary_id": "canary_000",
+      "k": 1,
+      "secret": "6028-9f0f-6410-4f40",
+      "secret_logppl_nats": 14.3327,
+      "variantes_logppl_moyenne": 223.6711,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 32.17
+    },
+    {
+      "canary_id": "canary_001",
+      "k": 1,
+      "secret": "fa51-b3df-2512-48d2",
+      "secret_logppl_nats": 20.3665,
+      "variantes_logppl_moyenne": 224.4658,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 31.234
+    },
+    {
+      "canary_id": "canary_002",
+      "k": 1,
+      "secret": "c6f1-43a6-69d3-42d7",
+      "secret_logppl_nats": 15.9298,
+      "variantes_logppl_moyenne": 224.3016,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 30.694
+    },
+    {
+      "canary_id": "canary_003",
+      "k": 1,
+      "secret": "4102-6b42-253f-4ddc",
+      "secret_logppl_nats": 40.5827,
+      "variantes_logppl_moyenne": 223.8476,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 24.545
+    },
+    {
+      "canary_id": "canary_004",
+      "k": 1,
+      "secret": "eee6-8bcd-ca9b-4f62",
+      "secret_logppl_nats": 28.1285,
+      "variantes_logppl_moyenne": 223.5623,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 27.481
+    },
+    {
+      "canary_id": "canary_005",
+      "k": 1,
+      "secret": "a4ea-4d35-4e8a-469b",
+      "secret_logppl_nats": 34.8544,
+      "variantes_logppl_moyenne": 224.4319,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 26.404
+    },
+    {
+      "canary_id": "canary_006",
+      "k": 1,
+      "secret": "a1d6-9e78-97ba-4b90",
+      "secret_logppl_nats": 17.6644,
+      "variantes_logppl_moyenne": 224.2837,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 31.69
+    },
+    {
+      "canary_id": "canary_007",
+      "k": 1,
+      "secret": "b629-db02-c72e-4ba8",
+      "secret_logppl_nats": 20.593,
+      "variantes_logppl_moyenne": 223.7725,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 30.471
+    },
+    {
+      "canary_id": "canary_008",
+      "k": 1,
+      "secret": "fbba-28d2-565b-4ee2",
+      "secret_logppl_nats": 13.1853,
+      "variantes_logppl_moyenne": 224.9306,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 32.772
+    },
+    {
+      "canary_id": "canary_009",
+      "k": 1,
+      "secret": "89d3-644b-66e3-4c32",
+      "secret_logppl_nats": 9.707,
+      "variantes_logppl_moyenne": 223.8556,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.939
+    },
+    {
+      "canary_id": "canary_010",
+      "k": 1,
+      "secret": "0aed-f039-cdaf-4d61",
+      "secret_logppl_nats": 16.7349,
+      "variantes_logppl_moyenne": 223.9429,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 31.717
+    },
+    {
+      "canary_id": "canary_011",
+      "k": 1,
+      "secret": "79dd-045b-bd15-4bb1",
+      "secret_logppl_nats": 35.3848,
+      "variantes_logppl_moyenne": 224.181,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 26.027
+    },
+    {
+      "canary_id": "canary_012",
+      "k": 1,
+      "secret": "aece-58dc-28f2-4196",
+      "secret_logppl_nats": 13.7431,
+      "variantes_logppl_moyenne": 224.0659,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 31.809
+    },
+    {
+      "canary_id": "canary_013",
+      "k": 1,
+      "secret": "517b-1210-4abf-4460",
+      "secret_logppl_nats": 18.7422,
+      "variantes_logppl_moyenne": 224.4321,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 30.873
+    },
+    {
+      "canary_id": "canary_014",
+      "k": 1,
+      "secret": "105e-6eec-5d92-4895",
+      "secret_logppl_nats": 6.0925,
+      "variantes_logppl_moyenne": 223.5575,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 36.703
+    },
+    {
+      "canary_id": "canary_015",
+      "k": 5,
+      "secret": "43c4-124f-6654-4ff6",
+      "secret_logppl_nats": 8.035,
+      "variantes_logppl_moyenne": 223.2636,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 32.87
+    },
+    {
+      "canary_id": "canary_016",
+      "k": 5,
+      "secret": "04c1-d91a-083a-4746",
+      "secret_logppl_nats": 8.0897,
+      "variantes_logppl_moyenne": 224.677,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 32.672
+    },
+    {
+      "canary_id": "canary_017",
+      "k": 5,
+      "secret": "2744-49ad-5daa-4bfc",
+      "secret_logppl_nats": 10.0909,
+      "variantes_logppl_moyenne": 224.5756,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.653
+    },
+    {
+      "canary_id": "canary_018",
+      "k": 5,
+      "secret": "cfe7-122c-687d-44f8",
+      "secret_logppl_nats": 6.2504,
+      "variantes_logppl_moyenne": 223.9646,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.457
+    },
+    {
+      "canary_id": "canary_019",
+      "k": 5,
+      "secret": "db4d-d276-07c6-409e",
+      "secret_logppl_nats": 4.9628,
+      "variantes_logppl_moyenne": 223.8827,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.292
+    },
+    {
+      "canary_id": "canary_020",
+      "k": 5,
+      "secret": "72ad-7ae6-5fb6-4c30",
+      "secret_logppl_nats": 27.3362,
+      "variantes_logppl_moyenne": 223.9223,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 28.774
+    },
+    {
+      "canary_id": "canary_021",
+      "k": 5,
+      "secret": "828a-bcbe-a964-464d",
+      "secret_logppl_nats": 7.053,
+      "variantes_logppl_moyenne": 224.5952,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 37.49
+    },
+    {
+      "canary_id": "canary_022",
+      "k": 5,
+      "secret": "91b8-e490-d02c-4fa6",
+      "secret_logppl_nats": 4.4495,
+      "variantes_logppl_moyenne": 223.5831,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 37.681
+    },
+    {
+      "canary_id": "canary_023",
+      "k": 5,
+      "secret": "540b-1b18-e061-428f",
+      "secret_logppl_nats": 8.9925,
+      "variantes_logppl_moyenne": 224.1794,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.652
+    },
+    {
+      "canary_id": "canary_024",
+      "k": 5,
+      "secret": "79d4-efa7-1a79-41a5",
+      "secret_logppl_nats": 4.4261,
+      "variantes_logppl_moyenne": 223.734,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.919
+    },
+    {
+      "canary_id": "canary_025",
+      "k": 5,
+      "secret": "7969-fcfe-b7b2-46da",
+      "secret_logppl_nats": 6.9,
+      "variantes_logppl_moyenne": 223.9978,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.82
+    },
+    {
+      "canary_id": "canary_026",
+      "k": 5,
+      "secret": "8cb4-c22d-6d26-4e49",
+      "secret_logppl_nats": 7.114,
+      "variantes_logppl_moyenne": 223.5585,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.833
+    },
+    {
+      "canary_id": "canary_027",
+      "k": 5,
+      "secret": "cab3-03ea-eabd-45f3",
+      "secret_logppl_nats": 7.363,
+      "variantes_logppl_moyenne": 224.0185,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.658
+    },
+    {
+      "canary_id": "canary_028",
+      "k": 5,
+      "secret": "1d58-ab97-b996-420c",
+      "secret_logppl_nats": 7.5838,
+      "variantes_logppl_moyenne": 223.5742,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.259
+    },
+    {
+      "canary_id": "canary_029",
+      "k": 5,
+      "secret": "ff8f-8bc9-2f96-47e3",
+      "secret_logppl_nats": 9.4209,
+      "variantes_logppl_moyenne": 224.475,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.639
+    },
+    {
+      "canary_id": "canary_030",
+      "k": 10,
+      "secret": "690b-48f4-06c1-44a6",
+      "secret_logppl_nats": 6.0532,
+      "variantes_logppl_moyenne": 223.7372,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 36.101
+    },
+    {
+      "canary_id": "canary_031",
+      "k": 10,
+      "secret": "99c7-2aa8-2545-46ae",
+      "secret_logppl_nats": 4.597,
+      "variantes_logppl_moyenne": 224.5056,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.965
+    },
+    {
+      "canary_id": "canary_032",
+      "k": 10,
+      "secret": "e88d-a910-a836-4740",
+      "secret_logppl_nats": 6.0757,
+      "variantes_logppl_moyenne": 224.6163,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.342
+    },
+    {
+      "canary_id": "canary_033",
+      "k": 10,
+      "secret": "bd03-0437-ec83-40bc",
+      "secret_logppl_nats": 5.5423,
+      "variantes_logppl_moyenne": 224.3541,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.715
+    },
+    {
+      "canary_id": "canary_034",
+      "k": 10,
+      "secret": "2e74-0724-8242-48b9",
+      "secret_logppl_nats": 5.875,
+      "variantes_logppl_moyenne": 224.6513,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.646
+    },
+    {
+      "canary_id": "canary_035",
+      "k": 10,
+      "secret": "73b7-0f35-1c1e-4b64",
+      "secret_logppl_nats": 4.4847,
+      "variantes_logppl_moyenne": 223.6359,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.704
+    },
+    {
+      "canary_id": "canary_036",
+      "k": 10,
+      "secret": "d82b-757c-89ea-4d13",
+      "secret_logppl_nats": 6.7002,
+      "variantes_logppl_moyenne": 223.7998,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.195
+    },
+    {
+      "canary_id": "canary_037",
+      "k": 10,
+      "secret": "83bf-18c9-99d9-4a44",
+      "secret_logppl_nats": 6.5618,
+      "variantes_logppl_moyenne": 224.3145,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.935
+    },
+    {
+      "canary_id": "canary_038",
+      "k": 10,
+      "secret": "fdf7-e21e-8185-431a",
+      "secret_logppl_nats": 6.2976,
+      "variantes_logppl_moyenne": 224.1115,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.583
+    },
+    {
+      "canary_id": "canary_039",
+      "k": 10,
+      "secret": "7e00-f133-d644-437d",
+      "secret_logppl_nats": 6.9248,
+      "variantes_logppl_moyenne": 224.2069,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.45
+    },
+    {
+      "canary_id": "canary_040",
+      "k": 50,
+      "secret": "4f50-68fe-72e0-4dca",
+      "secret_logppl_nats": 5.2032,
+      "variantes_logppl_moyenne": 224.247,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 36.289
+    },
+    {
+      "canary_id": "canary_041",
+      "k": 50,
+      "secret": "cd53-0c7d-6025-46bc",
+      "secret_logppl_nats": 6.5569,
+      "variantes_logppl_moyenne": 224.1534,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.767
+    },
+    {
+      "canary_id": "canary_042",
+      "k": 50,
+      "secret": "3df9-96bc-22d2-4c78",
+      "secret_logppl_nats": 4.8067,
+      "variantes_logppl_moyenne": 223.4614,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 36.005
+    },
+    {
+      "canary_id": "canary_043",
+      "k": 50,
+      "secret": "af96-685b-4bd0-446c",
+      "secret_logppl_nats": 1.9078,
+      "variantes_logppl_moyenne": 225.0376,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.213
+    },
+    {
+      "canary_id": "canary_044",
+      "k": 50,
+      "secret": "a7ca-ec79-472d-4ac2",
+      "secret_logppl_nats": 7.9383,
+      "variantes_logppl_moyenne": 224.7726,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 33.971
+    },
+    {
+      "canary_id": "canary_045",
+      "k": 50,
+      "secret": "378e-dd4c-34be-4db8",
+      "secret_logppl_nats": 3.5691,
+      "variantes_logppl_moyenne": 223.8577,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.049
+    },
+    {
+      "canary_id": "canary_046",
+      "k": 50,
+      "secret": "6854-12d6-7c79-4867",
+      "secret_logppl_nats": 4.5359,
+      "variantes_logppl_moyenne": 224.1881,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.875
+    },
+    {
+      "canary_id": "canary_047",
+      "k": 50,
+      "secret": "586d-efd9-113d-4cd8",
+      "secret_logppl_nats": 1.8616,
+      "variantes_logppl_moyenne": 223.5274,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 34.499
+    },
+    {
+      "canary_id": "canary_048",
+      "k": 50,
+      "secret": "cf5c-68c5-5513-460d",
+      "secret_logppl_nats": 1.3652,
+      "variantes_logppl_moyenne": 224.1297,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 37.398
+    },
+    {
+      "canary_id": "canary_049",
+      "k": 50,
+      "secret": "dc41-cf2a-4cb3-4972",
+      "secret_logppl_nats": 1.8597,
+      "variantes_logppl_moyenne": 224.4374,
+      "rang": 1,
+      "exposure_rang_bits": 13.288,
+      "exposure_estimee_bits": 35.708
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T13:09:22",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}

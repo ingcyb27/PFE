@@ -1,0 +1,36 @@
+{
+  "mode": "REEL",
+  "tag": "dp_eps32",
+  "model_path": "/netfs/tsp/student/2025/frhoulam/PFE/week4/orange/runs/dp_eps32/model",
+  "val": {
+    "perte": 3.6493,
+    "ppl": 38.448
+  },
+  "general": {
+    "statut": "ok",
+    "source": "wikitext-2-raw-v1 test, 200 paragraphes",
+    "perte": 21.611,
+    "ppl": 2429716256.284
+  },
+  "exemples": [
+    {
+      "debut": "Bonjour, veuillez trouver ci-joint",
+      "suite": " le compte-rendu technique de la réunion hebdomadaire du projet. [Réf-Doc #01192 :"
+    },
+    {
+      "debut": "Suite à notre discussion avec le pôle infrastructure,",
+      "suite": " les accès VPN et firewall seront audités ce vendredi. [Réf-Doc #00331 : Audit de conformité"
+    },
+    {
+      "debut": "The history of the city begins",
+      "suite": " a versionel-chité du deationitéitéetteilleitzes déqu'ont # : politique infrastructure.] : pourade[dee"
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T13:27:49",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}

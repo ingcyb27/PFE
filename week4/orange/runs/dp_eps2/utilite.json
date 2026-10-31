@@ -1,0 +1,36 @@
+{
+  "mode": "REEL",
+  "tag": "dp_eps2",
+  "model_path": "/netfs/tsp/student/2025/frhoulam/PFE/week4/orange/runs/dp_eps2/model",
+  "val": {
+    "perte": 5.2232,
+    "ppl": 185.523
+  },
+  "general": {
+    "statut": "ok",
+    "source": "wikitext-2-raw-v1 test, 200 paragraphes",
+    "perte": 18.3606,
+    "ppl": 94171263.005
+  },
+  "exemples": [
+    {
+      "debut": "Bonjour, veuillez trouver ci-joint",
+      "suite": " techniques de facvertices auureure.]bè.]fa.]\n [ou'navel de la.] Le couroure.] le cour"
+    },
+    {
+      "debut": "Suite à notre discussion avec le pôle infrastructure,",
+      "suite": " la discussion du des spés et dontices-ontal-ité une-duluent ban discussion du la discussion de réluentil-it"
+    },
+    {
+      "debut": "The history of the city begins",
+      "suite": ". [RIDEada.] #ada. #cacc veception # # # # # # Eve Offacheanel # Evefacheb"
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T04:46:39",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}

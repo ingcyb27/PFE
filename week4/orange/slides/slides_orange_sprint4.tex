@@ -1,0 +1,200 @@
+% =============================================================
+% SPRINT 4 - VOLET ORANGE (Fatima-Zahra) : CM1 DP-SGD
+% Figures attendues dans le dossier de la presentation :
+%   s4_fig1_mia_auc.png         (= week4/orange/figures/fig1_mia_auc.png)
+%   s4_fig2_exposure_par_k.png  (= week4/orange/figures/fig2_exposure_par_k.png)
+%   s4_fig3_compromis.png       (= week4/orange/figures/fig3_compromis.png)
+%   s4_fig5_exposure_vs_eps.png (= week4/orange/figures/fig5_exposure_vs_eps.png)
+% =============================================================
+
+\begin{frame}{CM1 : Confidentialité Différentielle (DP-SGD)}
+    \subtitleline{Borner mathématiquement l'influence de chaque document sur le modèle}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{block}{DP-SGD : 3 gestes à chaque pas}
+                \small
+                \begin{itemize}
+                    \item[\textbf{1.}] Gradient \textbf{par document} (pas par lot).
+                    \item[\textbf{2.}] \textbf{Écrêtage} à la norme $C$ : aucun document ne pèse plus que $C$.
+                    \item[\textbf{3.}] \textbf{Bruit gaussien} $\mathcal{N}(0, \sigma^2 C^2)$ ajouté à la somme.
+                \end{itemize}
+                Outil : Opacus 1.6, comptable RDP.
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Garantie $(\varepsilon, \delta)$}
+                \small
+                Pour deux corpus qui diffèrent d'\textbf{un} document :
+                $$P[M(D) \in S] \le e^{\varepsilon}\, P[M(D') \in S] + \delta$$
+                {\footnotesize $\varepsilon$ petit = protection forte ; $\delta = 10^{-5}$.}
+            \end{block}
+            \begin{alertblock}{Limite : la confidentialité de groupe}
+                \footnotesize Secret présent dans $k$ documents : protégé à $\approx k\varepsilon$ seulement ($k = 50$, $\varepsilon = 8$ : aucune garantie utile).
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Protocole : 5 Modèles Entraînés à l'Identique}
+    \subtitleline{pythia-160m $\cdot$ 50 époques $\cdot$ lr $2\cdot10^{-4}$ $\cdot$ lots de 16 $\cdot$ $C = 1$ $\cdot$ GPU 1}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{block}{Modèles comparés}
+                \renewcommand{\arraystretch}{1.05}
+                {\footnotesize
+                \begin{tabularx}{\textwidth}{l X X}
+                    \rowcolor{TSPblue}\color{white}\textbf{Modèle} & \color{white}\textbf{$\sigma$} & \color{white}\textbf{$\varepsilon$ atteint} \\
+                    Sans DP (référence) & 0 & $\infty$ \\
+                    \rowcolor{TSPgrey} DP très faible & 0.34 & 128 \\
+                    DP faible & 0.50 & 32 \\
+                    \rowcolor{TSPgrey} DP modérée & 0.79 & 8 \\
+                    DP forte & 1.74 & 2 \\
+                \end{tabularx}
+                }
+            \end{block}
+            {\footnotesize Mêmes audits qu'au Sprint 3 : Exposure à 10\,000 leurres, MIA apparié, plus la perplexité (utilité).\par}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Corrections du script initial}
+                \footnotesize
+                \begin{itemize}
+                    \item $\sigma = 0.5$ donnait $\varepsilon \approx 33$ (et non 8) : $\sigma$ est désormais \textbf{calculé} pour l'$\varepsilon$ visé.
+                    \item Référence sans DP aux \textbf{mêmes réglages}, pour isoler l'effet de la DP.
+                    \item Padding exclu, aucun mode simulé.
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{DP-SGD : l'Exposure des Secrets Retombe au Hasard}
+    \subtitleline{Sonde 3 (Carlini 2019) $\cdot$ 10\,000 leurres $\cdot$ plafond 13,3 bits $\cdot$ hasard $\approx$ 1,4 bit}
+    \begin{columns}[T]
+        \begin{column}{0.52\textwidth}
+            \slideimg{s4_fig2_exposure_par_k.png}
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \begin{block}{Exposure moyenne (bits)}
+                \renewcommand{\arraystretch}{1.0}
+                {\scriptsize
+                \begin{tabularx}{\textwidth}{l X X X X}
+                    \rowcolor{TSPblue}\color{white}\textbf{Modèle} & \color{white}\textbf{k=1} & \color{white}\textbf{k=5} & \color{white}\textbf{k=10} & \color{white}\textbf{k=50} \\
+                    Sans DP & \textbf{13.3} & \textbf{13.3} & \textbf{13.3} & \textbf{13.3} \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=128 & 1.2 & 2.8 & 3.1 & 4.6 \\
+                    DP $\varepsilon$=32 & 1.3 & 2.8 & 2.4 & 3.6 \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=8 & 1.1 & 2.1 & 2.2 & 2.5 \\
+                    DP $\varepsilon$=2 & 1.0 & 2.2 & 1.6 & 2.0 \\
+                \end{tabularx}
+                }
+            \end{block}
+            \begin{alertblock}{Lecture}
+                \scriptsize Sans DP, les 50 secrets battent les 10\,000 leurres. Avec DP, l'Exposure reste entre 1 et 4,6 bits, même à $\varepsilon = 128$. Les secrets uniques ($k=1$) restent au hasard pour tous les $\varepsilon$.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{DP-SGD : l'Attaque d'Appartenance Devient Aveugle}
+    \subtitleline{Sonde 4 (Yeom 2018) $\cdot$ test apparié $\cdot$ 400 paires membre / non-membre}
+    \begin{columns}[T]
+        \begin{column}{0.52\textwidth}
+            \slideimg{s4_fig1_mia_auc.png}
+        \end{column}
+        \begin{column}{0.46\textwidth}
+            \begin{block}{Succès de l'attaque}
+                \renewcommand{\arraystretch}{1.0}
+                {\scriptsize
+                \begin{tabularx}{\textwidth}{l X X}
+                    \rowcolor{TSPblue}\color{white}\textbf{Modèle} & \color{white}\textbf{AUC} & \color{white}\textbf{TPR @ 1\% FPR} \\
+                    pythia d'origine & 0.52 & 0.01 \\
+                    \rowcolor{TSPgrey} Sans DP & \textbf{0.98} & \textbf{0.72} \\
+                    DP $\varepsilon$=128 & 0.52 & 0.03 \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=32 & 0.51 & 0.02 \\
+                    DP $\varepsilon$=8 & 0.50 & 0.02 \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=2 & 0.49 & 0.01 \\
+                \end{tabularx}
+                }
+            \end{block}
+            \begin{alertblock}{Lecture}
+                \scriptsize Sans DP, l'attaquant identifie 72\,\% des documents avec 1\,\% de fausses alarmes. Avec DP, il reste au niveau du hasard pour tous les $\varepsilon$ testés, jusqu'à 128.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Où la Fuite Réapparaît-elle ? Les Secrets Répétés d'Abord}
+    \subtitleline{Exposure en fonction de $\varepsilon$ $\cdot$ $\varepsilon$ de 2 à 128 $\cdot$ comparaison sans DP}
+    \begin{columns}[T]
+        \begin{column}{0.54\textwidth}
+            \slideimg{s4_fig5_exposure_vs_eps.png}
+        \end{column}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Exposure de $k=50$ selon $\varepsilon$}
+                \renewcommand{\arraystretch}{1.0}
+                {\scriptsize
+                \begin{tabularx}{\textwidth}{X X X X X}
+                    \rowcolor{TSPblue}\color{white}\textbf{2} & \color{white}\textbf{8} & \color{white}\textbf{32} & \color{white}\textbf{128} & \color{white}\textbf{sans DP} \\
+                    2.0 & 2.5 & 3.6 & 4.6 & \textbf{13.3} \\
+                \end{tabularx}
+                }
+            \end{block}
+            \begin{alertblock}{Lecture}
+                \scriptsize Pas de seuil brutal : la fuite des secrets répétés \textbf{monte progressivement} avec $\varepsilon$ (groupe : $\approx k\varepsilon$). Documents et secrets uniques restent au hasard jusqu'à 128, très loin des 13,3 bits sans DP.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Le Coût de la DP : Compromis Confidentialité / Utilité}
+    \subtitleline{Perplexité de validation (corpus métier) et perte sur texte général (wikitext-2)}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \slideimg{s4_fig3_compromis.png}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Utilité}
+                \renewcommand{\arraystretch}{1.0}
+                {\scriptsize
+                \begin{tabularx}{\textwidth}{l X X}
+                    \rowcolor{TSPblue}\color{white}\textbf{Modèle} & \color{white}\textbf{PPL val} & \color{white}\textbf{Perte générale} \\
+                    pythia d'origine & 112 & 3.96 \\
+                    \rowcolor{TSPgrey} Sans DP & 115 & 26.2 \\
+                    DP $\varepsilon$=128 & 46 & 21.4 \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=32 & 38 & 21.6 \\
+                    DP $\varepsilon$=8 & \textbf{31} & 20.4 \\
+                    \rowcolor{TSPgrey} DP $\varepsilon$=2 & 186 & 18.4 \\
+                \end{tabularx}
+                }
+            \end{block}
+            \begin{alertblock}{Lecture}
+                \scriptsize $\varepsilon$=8 : meilleur compromis (le bruit régularise). $\varepsilon$=2 détruit la génération sans gain de confidentialité. Tous les modèles fine-tunés oublient l'anglais général.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Message Clé du Volet DP-SGD}
+    \subtitleline{Une protection très efficace, à condition de bien choisir $\varepsilon$}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Ce que montrent les mesures}
+                \small
+                \begin{itemize}
+                    \item $\varepsilon = 8$ : MIA de 0.98 $\to$ 0.50, Exposure de 13,3 $\to$ 1 à 2,5 bits.
+                    \item Quand $\varepsilon$ augmente, les secrets répétés fuient en premier (4,6 bits à $\varepsilon = 128$).
+                    \item $\varepsilon = 2$ : aucun gain de confidentialité, forte perte d'utilité.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Limites et suite}
+                \small
+                \begin{itemize}
+                    \item Une seule graine, corpus synthétique, 10 à 15 canaris par groupe.
+                    \item Isoler l'écrêtage seul ($\sigma = 0$) du bruit.
+                    \item À tester : DP + déduplication (volet d'Emmanuel).
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}

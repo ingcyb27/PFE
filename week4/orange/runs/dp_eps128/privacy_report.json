@@ -1,0 +1,12 @@
+{
+  "tag": "dp_eps128",
+  "dp": true,
+  "epsilon_final": 127.9901,
+  "delta": 1e-05,
+  "sigma": 0.34168243408203125,
+  "clipping": 1.0,
+  "epochs": 50,
+  "train_loss_final": 0.3065,
+  "val_loss_final": 3.8323,
+  "val_ppl_final": 46.169
+}

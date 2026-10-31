@@ -1,0 +1,36 @@
+{
+  "mode": "REEL",
+  "tag": "dp_eps8",
+  "model_path": "/netfs/tsp/student/2025/frhoulam/PFE/week4/orange/runs/dp_eps8/model",
+  "val": {
+    "perte": 3.4473,
+    "ppl": 31.414
+  },
+  "general": {
+    "statut": "ok",
+    "source": "wikitext-2-raw-v1 test, 200 paragraphes",
+    "perte": 20.4045,
+    "ppl": 727057164.892
+  },
+  "exemples": [
+    {
+      "debut": "Bonjour, veuillez trouver ci-joint",
+      "suite": " le compte-rendu technique de la réunion hebdomadaire du projet. [Réf-Doc #00151 :"
+    },
+    {
+      "debut": "Suite à notre discussion avec le pôle infrastructure,",
+      "suite": " les accès VPN et firewall lingu des firewall et firewall agdes chefnavuls auante. [Réf-Docit DE PRO Genade"
+    },
+    {
+      "debut": "The history of the city begins",
+      "suite": ". [Ria).ia.] final-ireipel). pour rapport-nt acc.ure # : firewall-net back\n into documentary-"
+    }
+  ],
+  "env": {
+    "date": "2026-10-31T04:38:34",
+    "cuda_visible_devices": "1",
+    "torch": "2.14.1+cu130",
+    "transformers": "4.46.3",
+    "gpu": "NVIDIA L40S"
+  }
+}
